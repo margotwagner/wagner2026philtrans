@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 set -euo pipefail
 # ============================================================================
-# train_random.sh
+# train_identity.sh
 #
 # Author: Margot Wagner
 # Date: 2026-04-23
 #
-# Train the dense Elman RNN from the random hidden-weight initialization used
+# Train the dense Elman RNN from the identity hidden-weight initialization used
 # as the baseline condition in the paper.
 #
 # SEED:
@@ -14,7 +14,7 @@ set -euo pipefail
 # run receives a distinct seed.
 #
 # Run this script from the project root:
-#   ./scripts/train_random.sh
+#   ./scripts/train_identity.sh
 # ============================================================================
 
 DATA="./data/inputs/Ns100_SeqN100_asym1.pth.tar"
@@ -26,7 +26,7 @@ mkdir -p "$RUN_ROOT"
 EPOCHS=100000
 RUNS=1
 SEED=42
-CFG="random"
+CFG="identity"
 
 COMMON_ARGS=(
   --input "$DATA"
@@ -45,10 +45,10 @@ COMMON_ARGS=(
   --print-freq 1000
 )
 
-# Vanilla PyTorch random
+# Identity hidden weight initialization
 python Main.py \
   "${COMMON_ARGS[@]}" \
-  --whh_path "$INIT_ROOT/random_pytorch/seed000/Whh.npy" \
+  --whh_path "$INIT_ROOT/identity/Whh.npy" \
   --savename "$RUN_ROOT/$CFG"
-echo "Running random initialization experiment..."
+echo "Running identity initialization experiment..."
 echo "Saving to: $RUN_ROOT/$CFG"
