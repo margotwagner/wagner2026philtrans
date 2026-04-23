@@ -23,7 +23,7 @@ RUN_ROOT="./data/runs"
 
 mkdir -p "$RUN_ROOT"
 
-EPOCHS=100000
+EPOCHS=1000
 RUNS=1
 SEED=42
 CFG="identity"
@@ -47,8 +47,5 @@ COMMON_ARGS=(
 
 # Identity hidden weight initialization
 echo "Running identity initialization experiment..."
-python Main.py \
-  "${COMMON_ARGS[@]}" \
-  --whh_path "$INIT_ROOT/$CGF/Whh.npy" \
-  --savename "$RUN_ROOT/$CFG"
+python Main.py "${COMMON_ARGS[@]}" --whh_path "$INIT_ROOT/$CFG/Whh.npy" --savename "$RUN_ROOT/$CFG"
 echo "Saving to: $RUN_ROOT/$CFG"
