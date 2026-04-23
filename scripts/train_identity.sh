@@ -46,9 +46,9 @@ COMMON_ARGS=(
 )
 
 # Identity hidden weight initialization
+echo "Running identity initialization experiment..."
 python Main.py \
   "${COMMON_ARGS[@]}" \
-  --whh_path "$INIT_ROOT/identity/Whh.npy" \
+  --whh_path "$INIT_ROOT/$CGF/Whh.npy" \
   --savename "$RUN_ROOT/$CFG"
-echo "Running identity initialization experiment..."
 echo "Saving to: $RUN_ROOT/$CFG"

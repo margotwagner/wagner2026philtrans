@@ -46,9 +46,9 @@ COMMON_ARGS=(
 )
 
 # Vanilla PyTorch random
+echo "Running random initialization experiment..."
 python Main.py \
   "${COMMON_ARGS[@]}" \
   --whh_path "$INIT_ROOT/random_pytorch/seed000/Whh.npy" \
   --savename "$RUN_ROOT/$CFG"
-echo "Running random initialization experiment..."
 echo "Saving to: $RUN_ROOT/$CFG"

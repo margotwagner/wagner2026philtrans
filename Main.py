@@ -1,40 +1,64 @@
+"""Main.py
+
+Author: Margot Wagner
+Date: 2026-04-23
+
+Train Elman-style recurrent neural networks for the sequential prediction
+experiments.
+
+This script is the main training entry point for the project. It loads a saved
+input/target tensor pair, constructs either a dense Elman RNN, applies the requested initialization and parameter-freezing options,
+and trains the model with backpropagation through time.
+
+Main features
+-------------
+- one-step prediction or autoencoder-style reconstruction objectives
+- dense recurrent connectivity
+- optional fixed input, recurrent, and output parameterizations
+- optional recurrent-weight initialization from disk
+- gradient clipping, mixed precision, and checkpoint resume support
+- periodic logging of hidden-state, gradient, weight, and error diagnostics
+- multi-run execution with independent run directories for reproducibility
+
+Expected input file
+-------------------
+The file passed through ``--input`` should contain a dictionary with keys
+``"X_mini"`` and ``"Target_mini"``.
+
+Outputs
+-------
+For each run, the script writes a log file, a loss plot, and a checkpoint
+containing model weights, output/hidden snapshots, diagnostic histories, run
+metadata, and environment/RNG information.
+
+Notes
+-----
+This script intentionally keeps training and analysis diagnostics together so
+that each checkpoint is self-contained. For faster training-only runs, increase
+``--print-freq`` so diagnostic snapshots are computed less often.
 """
-A clean, commented version of Main.py for revision models (Elman RNN trainer)
-Authors: Y.C. (8/8/2023) M.W. (6/15/2026)
 
-
-This script trains an Elman-style RNN on a time-series task using BPTT.
-It supports options for:
-• One-step prediction loss (pred mode)
-• Autoencoder target (= input)
-• Constraining/fixing specific parameter groups (input/output/recurrent)
-• Partially training only a subset of parameters via masks
-• Optional gradient-norm clipping
-• Periodic logging and checkpointing
-
-Usage examples:
-
-"""
 import argparse
-import sys
+import math
 import os
+import random
 import re
-import time
-import numpy as np
-import matplotlib
 import sys
+import time
+from typing import Optional
 
-sys.path.append("./src")
+import matplotlib
 
 matplotlib.use("Agg")
+
 import matplotlib.pyplot as plt
+import numpy as np
 import torch
 import torch.nn as nn
-from train.ElmanRNN import *
 from tqdm import tqdm
-import random
-from typing import Optional
-import math
+
+sys.path.append("./src")
+from train.ElmanRNN import ElmanRNN
 
 
 parser = argparse.ArgumentParser(description="PyTorch Elman BPTT Training")
@@ -198,12 +222,7 @@ parser.add_argument(
     "--whh_path",
     type=str,
     default="",
-    help=("Path to a hidden-weight .npy (H×H for dense, row0 for circulant)."),
-)
-parser.add_argument(
-    "--enforce_circulant",
-    action="store_true",
-    help="If set, replace RNN recurrence with a circulant (circular-convolution) parameterization.",
+    help=("Path to a hidden-weight .npy of shape (H, H)."),
 )
 parser.add_argument(
     "--compile",
@@ -225,7 +244,7 @@ parser.add_argument(
 
 
 def main():
-    """Entry point: parse args, build data/model/optimizer, train, and save artifacts"""
+    """Parse arguments, prepare the data/model, run training, and save outputs."""
     global args, f
 
     args = parser.parse_args()
@@ -259,7 +278,7 @@ def main():
         raise ValueError(
             "--whh_path is required unless --resume is provided. "
             "For fresh runs, it must point to a .npy file containing "
-            "the hidden weights (HxH for dense, row0 for circulant)."
+            "the hidden weights (HxH for dense)."
         )
     if not args.savename:
         raise ValueError(
@@ -277,17 +296,19 @@ def main():
     # -----------------
     # Load training data
     # -----------------
-    # Expected keys in saved file: 'X_mini' (inputs), 'Target_mini' (targets)
+    # The saved tensor file is expected to contain:
+    #   - X_mini: input sequence
+    #   - Target_mini: target sequence
     loaded = torch.load(args.input, weights_only=False)
     X_mini = loaded["X_mini"]
     Target_mini = loaded["Target_mini"]
 
-    # Autoencoder mode: predict input itself (testing)
+    # Autoencoder mode: use the input sequence itself as the target
     if args.ae:
         log("Autoencoder scenario: Target = Input")
         Target_mini = loaded["X_mini"]
 
-    # One-step prediction: align X and Target for next-step forecasting
+    # One-step prediction: shift inputs and targets for next-step forecasting
     if args.pred:
         X_mini = X_mini[:, :-1, :]
         Target_mini = Target_mini[:, 1:, :]
@@ -317,7 +338,7 @@ def main():
         # 2) Per-run seeding so each run is reproducible & distinct
         set_seed(args.seed + run_idx)
 
-        # 3) Open a per-run log file (replaces the old one-off log)
+        # 3) Open a per-run log file for this specific run
         f = open(savename_run + ".log", "w")
         log("Settings:")
         log(str(sys.argv))
@@ -326,93 +347,25 @@ def main():
         # ---------------------
         # Define the network
         # ---------------------
-        if args.enforce_circulant:
-            # New circulant-parameterized Elman (defined in RNN_Class.py below)
-            net = ElmanRNN_circulant(
-                input_dim=N,
-                hidden_dim=hidden_N,
-                output_dim=N,
-                rnn_act=(args.rnn_act),
-            )
+        net = ElmanRNN(N, hidden_N, N, rnn_act=args.rnn_act)
 
-            # Optional: initialize circulant kernel from --whh_path
-            if args.whh_path:
-                try:
-                    log(f"[whh] loading circulant row0 from: {args.whh_path}")
-                    W = np.load(args.whh_path).astype(np.float32)
-                except Exception as e:
-                    msg = (
-                        f"[whh] ERROR: failed to load circulant row0 from "
-                        f"{args.whh_path}: {e}"
+        # Optional: initialize recurrent weight from disk
+        if args.whh_path:
+            try:
+                log(f"[whh] loading hidden weight from: {args.whh_path}")
+                W = np.load(args.whh_path)
+                if W.shape != (hidden_N, hidden_N):
+                    raise ValueError(
+                        f"Hidden weight shape mismatch: expected ({hidden_N}, {hidden_N}), got {W.shape}"
                     )
-                    log(msg)
-                    raise
-
-                # Accept shapes (H,), (1, H), or (H, 1)
-                if W.ndim == 1:
-                    if W.shape[0] != hidden_N:
-                        msg = (
-                            f"[whh] For circulant net, expected row0 of length "
-                            f"{hidden_N}, got shape {W.shape}"
-                        )
-                        log(msg)
-                        raise ValueError(msg)
-                    row0 = W.reshape(-1)
-                elif W.ndim == 2 and 1 in W.shape:
-                    row = W.reshape(-1)
-                    if row.shape[0] != hidden_N:
-                        msg = (
-                            f"[whh] For circulant net, expected row0 of length "
-                            f"{hidden_N}, got shape {W.shape}"
-                        )
-                        log(msg)
-                        raise ValueError(msg)
-                    row0 = row
-                else:
-                    msg = (
-                        f"[whh] For circulant net, whh_path must be a single row "
-                        f"of length {hidden_N}; got array of shape {W.shape}"
-                    )
-                    log(msg)
-                    raise ValueError(msg)
-
-                tol = 1e-8
-                nnz = int(np.count_nonzero(np.abs(row0) > tol))
-                log(
-                    f"[row0] len={row0.size}, nnz>(tol)={nnz}, "
-                    f"min={row0.min():.2e}, max={row0.max():.2e}"
+                _load_hidden_into_elman(
+                    net, args.whh_path, device=net.rnn.weight_hh_l0.device
                 )
-                net.hh_circ.init_from_row0(row0)
-
-            # Log K exactly once (now net definitely exists and is circulant)
-            K0 = int(net.hh_circ.conv.kernel_size[0])
-            log(f"[circ] kernel_size K={K0} (band density K/H={K0/hidden_N:.3f})")
-            net._kernel_K0 = K0  # stash for checkpoint
-
-        else:
-            # Dense Elman backend; rnn_act can be 'tanh', 'relu', or 'linear'
-            net = ElmanRNN(N, hidden_N, N, rnn_act=args.rnn_act)
-
-            # --- override hidden weight from disk ---
-            if args.whh_path:
-                try:
-                    log(
-                        f"[whh] loading hidden weight from (explicit path): {args.whh_path}"
-                    )
-                    # sanity check on shape
-                    W = np.load(args.whh_path)
-                    if W.shape != (hidden_N, hidden_N):
-                        raise ValueError(
-                            f"Hidden weight shape mismatch: expected ({hidden_N},{hidden_N}), got {W.shape}"
-                        )
-                    _load_hidden_into_elman(
-                        net, args.whh_path, device=net.rnn.weight_hh_l0.device
-                    )
-                except Exception as e:
-                    log(f"[whh] WARNING: failed to load init from whh_path: {e}")
+            except Exception as e:
+                log(f"[whh] WARNING: failed to load init from whh_path: {e}")
 
         # ------------------------------
-        # Frobenius-normalize W_hh at init (dense or circulant)
+        # Frobenius-normalize W_hh at init
         # ------------------------------
         if args.skip_fro_norm_hh:
             log("[fro] skipping Frobenius normalization of W_hh (user flag)")
@@ -449,10 +402,8 @@ def main():
 
         if args.fixi:
             for name, p in net.named_parameters():
-                # Handle BOTH architectures:
                 # - dense Elman: rnn.weight_ih_l0 / rnn.bias_ih_l0
-                # - circulant Elman: input_linear.weight / input_linear.bias
-                if name in ("rnn.weight_ih_l0", "input_linear.weight"):
+                if name == "rnn.weight_ih_l0":
                     if args.fixi == 1:
                         # Positive constant matrix (uniform average)
                         with torch.no_grad():
@@ -489,15 +440,6 @@ def main():
                                     net.rnn.bias_ih_l0.zero_()
                                 net.rnn.bias_ih_l0.requires_grad_(False)
                                 log("[fixi] zeroed & froze rnn.bias_ih_l0")
-                        elif name == "input_linear.weight":
-                            if (
-                                hasattr(net, "input_linear")
-                                and net.input_linear.bias is not None
-                            ):
-                                with torch.no_grad():
-                                    net.input_linear.bias.zero_()
-                                net.input_linear.bias.requires_grad_(False)
-                                log("[fixi] zeroed & froze input_linear.bias")
 
                     elif args.fixi == 5:
                         # Identity (rectangular eye) without bias frozen
@@ -522,24 +464,10 @@ def main():
                                     net.rnn.bias_ih_l0.zero_()
                                 net.rnn.bias_ih_l0.requires_grad_(False)
                                 log("[fixi] zeroed & froze rnn.bias_ih_l0")
-                        elif name == "input_linear.weight":
-                            if (
-                                hasattr(net, "input_linear")
-                                and net.input_linear.bias is not None
-                            ):
-                                with torch.no_grad():
-                                    net.input_linear.bias.zero_()
-                                net.input_linear.bias.requires_grad_(False)
-                                log("[fixi] zeroed & froze input_linear.bias")
 
         if args.fixo:
             for name, p in net.named_parameters():
-                # Dense Elman output layer
-                is_dense_out = name == "linear.weight"
-                # Circulant Elman output layer
-                is_circ_out = name == "output_linear.weight"
-
-                if is_dense_out or is_circ_out:
+                if name == "linear.weight":
                     if args.fixo == 1:
                         # Positive constant matrix (uniform average)
                         with torch.no_grad():
@@ -564,25 +492,10 @@ def main():
                         log(f"[fixo] set {name} to identity and froze it")
 
                         # Also zero & freeze the matching output bias
-                        if (
-                            is_dense_out
-                            and hasattr(net, "linear")
-                            and net.linear.bias is not None
-                        ):
-                            with torch.no_grad():
-                                net.linear.bias.zero_()
-                            net.linear.bias.requires_grad_(False)
-                            log("[fixo] zeroed & froze linear.bias")
-
-                        if (
-                            is_circ_out
-                            and hasattr(net, "output_linear")
-                            and net.output_linear.bias is not None
-                        ):
-                            with torch.no_grad():
-                                net.output_linear.bias.zero_()
-                            net.output_linear.bias.requires_grad_(False)
-                            log("[fixo] zeroed & froze output_linear.bias")
+                        with torch.no_grad():
+                            net.linear.bias.zero_()
+                        net.linear.bias.requires_grad_(False)
+                        log("[fixo] zeroed & froze linear.bias")
 
                     elif args.fixo == 5:
                         # Identity decoder (rectangular eye) without bias frozen
@@ -598,25 +511,10 @@ def main():
                         # Random frozen initialization. Zero and freeze bias.
                         log(f"[fixo] set {name} to identity and froze it")
                         # Also zero & freeze the matching output bias
-                        if (
-                            is_dense_out
-                            and hasattr(net, "linear")
-                            and net.linear.bias is not None
-                        ):
-                            with torch.no_grad():
-                                net.linear.bias.zero_()
-                            net.linear.bias.requires_grad_(False)
-                            log("[fixo] zeroed & froze linear.bias")
-
-                        if (
-                            is_circ_out
-                            and hasattr(net, "output_linear")
-                            and net.output_linear.bias is not None
-                        ):
-                            with torch.no_grad():
-                                net.output_linear.bias.zero_()
-                            net.output_linear.bias.requires_grad_(False)
-                            log("[fixo] zeroed & froze output_linear.bias")
+                        with torch.no_grad():
+                            net.linear.bias.zero_()
+                        net.linear.bias.requires_grad_(False)
+                        log("[fixo] zeroed & froze linear.bias")
 
                     p.requires_grad_(False)
 
@@ -638,19 +536,6 @@ def main():
                         p.fill_(0.0)
                     p.requires_grad_(False)
                     log("[fixw] fixed rnn.bias_hh_l0 to 0 and froze it")
-
-                # Circulant Elman recurrent kernel
-                elif name == "hh_circ.conv.weight":
-                    with torch.no_grad():
-                        # kernel shape [1, 1, H]; sample similar range
-                        p.copy_(
-                            torch.rand_like(p) * 2.0 * (1.0 / np.sqrt(N))
-                            - (1.0 / np.sqrt(N))
-                        )
-                    p.requires_grad_(False)
-                    log(
-                        "[fixw] fixed hh_circ.conv.weight to random kernel and froze it"
-                    )
 
         # ------------------
         # Loss & resume
@@ -880,14 +765,6 @@ def main():
             save_dict["Mask_W"] = Mask_W
             save_dict["Mask_B"] = Mask_B
 
-        # Persist K in the checkpoint summary
-        if hasattr(net, "_kernel_K0"):
-            save_dict.setdefault("circulant", {})
-            save_dict["circulant"]["kernel_K"] = int(net._kernel_K0)
-            save_dict["circulant"]["kernel_band_density"] = float(
-                net._kernel_K0 / hidden_N
-            )
-
         torch.save(save_dict, savename_run + ".pth.tar")
         f.close()
         f = None  # close log file
@@ -1088,7 +965,7 @@ def train_partial(
 
                 optimizer.step()
 
-            # Optional nonegativity constraints after the step
+            # Optional nonnegativity constraints after the step
             if args.constraini:
                 for name, p in net.named_parameters():
                     if name == "rnn.weight_ih_l0":
@@ -1211,7 +1088,7 @@ def set_seed(seed: int = 1337):
     torch.manual_seed(seed)
     if torch.cuda.is_available():
         torch.cuda.manual_seed_all(seed)
-    # keep cuDNN fast/non-deterministic
+    # Keep cuDNN in fast, non-deterministic mode for training throughput.
     torch.backends.cudnn.deterministic = False
     torch.backends.cudnn.benchmark = True
 
@@ -1248,9 +1125,9 @@ def _load_hidden_into_elman(
         device = next(net.parameters()).device
     thW = thW.to(device)
     with torch.no_grad():
-        # ElmanRNN uses nn.RNN => weight_hh_l0 exists
+        # ElmanRNN uses nn.RNN, so the recurrent weight is weight_hh_l0.
         net.rnn.weight_hh_l0.copy_(thW)
-        # keep biases as-is (minimal & straightforward)
+        # Leave recurrent biases unchanged.
 
 
 def _compute_grad_metrics(net: nn.Module):
@@ -1591,15 +1468,6 @@ def _rfft_power_time_compat(x: torch.Tensor, time_dim: int = 1) -> torch.Tensor:
     """
     Returns the power spectrum |RFFT|^2 along the time dimension.
     - Accepts x shaped [..., T, ...] (e.g., [B, T, H] with time_dim=1).
-    - Returns a real tensor with frequencies on the same axis position 'time_dim',
-      i.e., shape is the same as x but with T replaced by F (onesided rfft length).
-    """
-
-
-def _rfft_power_time_compat(x: torch.Tensor, time_dim: int = 1) -> torch.Tensor:
-    """
-    Returns the power spectrum |RFFT|^2 along the time dimension.
-    - Accepts x shaped [..., T, ...] (e.g., [B, T, H] with time_dim=1).
     - Returns a real tensor with frequencies on the same axis position 'time_dim'.
     """
     # Move time_dim to last
@@ -1788,32 +1656,12 @@ def log(*args, sep=" ", end="\n"):
 
 def _export_dense_Whh(net: nn.Module) -> torch.Tensor:
     """
-    Return a dense HxH torch.Tensor for the current hidden->hidden operator,
-    regardless of backend (classic nn.RNN or circulant-via-Conv1d).
+    Return the hidden-to-hidden weight matrix of a dense Elman RNN.
     """
-    # Circulant backend: rebuild circulant from kernel in net.hh_circ
-    if hasattr(net, "hh_circ") and hasattr(net.hh_circ, "conv"):
-        # infer H and grab kernel (note: Conv1d stores 'flipped' kernel for correlation)
-        if hasattr(net, "hidden_dim"):
-            H = int(net.hidden_dim)
-        else:
-            # fallback: use output_linear.in_features if present
-            H = int(net.output_linear.in_features)
-        K = int(net.hh_circ.conv.kernel_size[0])
-        # unflip back to convolution kernel
-        w = torch.flip(net.hh_circ.conv.weight[0, 0, :K].detach(), dims=[0])  # (K,)
-        # zero-pad to length H (first row = [w[0:K], zeros])
-        w_full = torch.zeros(H, dtype=w.dtype, device=w.device)
-        w_full[:K] = w
-        # build circulant by rolling the first row
-        rows = [w_full.roll(shifts=i, dims=0) for i in range(H)]
-        return torch.stack(rows, dim=0)
-
-    # Dense Elman (nn.RNN)
     if hasattr(net, "rnn") and hasattr(net.rnn, "weight_hh_l0"):
         return net.rnn.weight_hh_l0.detach().clone()
 
-    raise AttributeError("No supported hidden->hidden weight found on this model.")
+    raise AttributeError("No hidden-to-hidden weight found on this model.")
 
 
 def _has_bf16_cuda() -> bool:
@@ -1866,11 +1714,8 @@ def _target_fro(hidden_N: int) -> float:
 @torch.no_grad()
 def _frobenius_normalize_hidden(net: nn.Module, hidden_N: int):
     """
-    Rescale the hidden->hidden operator (dense or circulant) so that
-    its implied dense matrix has Frobenius norm == _target_fro(hidden_N).
-    Works for:
-      - ElmanRNN (nn.RNN backend)
-      - ElmanRNN_circulant (Conv1d backend via _export_dense_Whh).
+    Rescale the recurrent weight matrix so that its Frobenius norm matches
+    the target value returned by `_target_fro(hidden_N)`.
     """
     target_fro = _target_fro(hidden_N)
 
@@ -1889,7 +1734,7 @@ def _frobenius_normalize_hidden(net: nn.Module, hidden_N: int):
 
     # Scale the actual parameters that implement W_hh
     for name, p in net.named_parameters():
-        if name == "rnn.weight_hh_l0" or name == "hh_circ.conv.weight":
+        if name == "rnn.weight_hh_l0":
             p.mul_(scale)
 
     log(
