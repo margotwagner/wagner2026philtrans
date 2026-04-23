@@ -1,0 +1,18 @@
+{
+  "shape": [
+    100,
+    100
+  ],
+  "mean": -4.947281558997929e-05,
+  "var": 0.003362497314810753,
+  "fro_norm": 5.798706531524658,
+  "sigma_max": 1.127528190612793,
+  "spectral_radius_abs_eigs": 0.5954450368881226,
+  "asymmetry_ratio": 1.4235836565925242,
+  "backend": "dense",
+  "family": "vanilla_pytorch",
+  "hidden_n": 100,
+  "seed": 3,
+  "norm": "raw",
+  "source": "nn.RNN.weight_hh_l0_default_init"
+}
