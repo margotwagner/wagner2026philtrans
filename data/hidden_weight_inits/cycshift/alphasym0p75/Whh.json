@@ -1,0 +1,19 @@
+{
+  "shape": [
+    100,
+    100
+  ],
+  "mean": 0.007499999832361937,
+  "var": 0.0030687504913657904,
+  "fro_norm": 5.590169906616211,
+  "sigma_max": 0.75,
+  "spectral_radius_abs_eigs": 0.75,
+  "asymmetry_ratio": 0.6324555277824402,
+  "backend": "dense",
+  "family": "shift",
+  "geometry": "cyclic",
+  "hidden_n": 100,
+  "alpha": 0.75,
+  "decomposition": "W=\u03b1S+(1-\u03b1)A",
+  "norm": "raw"
+}
