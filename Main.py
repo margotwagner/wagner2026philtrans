@@ -293,7 +293,7 @@ def main():
     # The saved tensor file is expected to contain:
     #   - X_mini: input sequence
     #   - Target_mini: target sequence
-    loaded = torch.load(args.input, weights_only=False)
+    loaded = torch.load(args.input)
     X_mini = loaded["X_mini"]
     Target_mini = loaded["Target_mini"]
 
@@ -540,7 +540,7 @@ def main():
         if args.resume:
             if os.path.isfile(args.resume):
                 log("=> loading previous network '{}'".format(args.resume))
-                checkpoint = torch.load(args.resume, weights_only=False)
+                checkpoint = torch.load(args.resume)
                 net.load_state_dict(checkpoint["state_dict"])
                 log("=> loaded previous network '{}' ".format(args.resume))
             else:
@@ -841,7 +841,7 @@ def train_partial(
                 Target = Target_mini
 
             # Forward + backward with optional AMP; grad metrics only on snapshot epochs
-            optimizer.zero_grad(set_to_none=True)
+            optimizer.zero_grad()
 
             # Decide AMP dtype on the fly from args (safe here even if repeated each epoch)
             use_amp = (

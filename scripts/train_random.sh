@@ -19,14 +19,14 @@ set -euo pipefail
 
 DATA="./data/inputs/prediction/Ns100_SeqN100_asym1.pth.tar"
 INIT_ROOT="./data/hidden_weight_inits"
-RUN_ROOT="./data/runs/prediction/cfg_tanh_sigmoid_fi5_fo5"
+RUN_ROOT="./data/runs"
 
 mkdir -p "$RUN_ROOT"
 
 EPOCHS=100000
-RUNS=3
+RUNS=1
 SEED=42
-CFG="cfg_tanh_sigmoid_fi5_fo5"
+CFG="random"
 
 COMMON_ARGS=(
   --input "$DATA"
@@ -53,6 +53,6 @@ COMMON_ARGS=(
 python Main.py \
   "${COMMON_ARGS[@]}" \
   --whh_path "$INIT_ROOT/random_pytorch/seed000/Whh.npy" \
-  --savename "$RUN_ROOT/random_pytorch/$CFG"
+  --savename "$RUN_ROOT/$CFG"
 echo "Running random initialization experiment..."
-echo "Saving to: $RUN_ROOT/random_pytorch/$CFG"
+echo "Saving to: $RUN_ROOT/$CFG"
