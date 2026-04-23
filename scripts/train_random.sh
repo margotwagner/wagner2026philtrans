@@ -9,7 +9,9 @@ set -euo pipefail
 # Train the dense Elman RNN from the random hidden-weight initialization used
 # as the baseline condition in the paper.
 #
-# SEED: base seed; Main.py offsets by run_idx to ensure different seeds across # runs
+# SEED:
+# Base random seed. Main.py automatically offsets this by run index so each
+# run receives a distinct seed.
 #
 # Run this script from the project root:
 #   ./scripts/Train_Random.sh
@@ -51,4 +53,6 @@ COMMON_ARGS=(
 python Main.py \
   "${COMMON_ARGS[@]}" \
   --whh_path "$INIT_ROOT/random_pytorch/seed000/Whh.npy" \
-  --savename "$RUN_ROOT/random_pytorch/$CFG" \
+  --savename "$RUN_ROOT/random_pytorch/$CFG"
+echo "Running random initialization experiment..."
+echo "Saving to: $RUN_ROOT/random_pytorch/$CFG"
