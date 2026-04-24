@@ -6,8 +6,7 @@ set -euo pipefail
 # Author: Margot Wagner
 # Date: 2026-04-23
 #
-# Train the dense Elman RNN from the identity hidden-weight initialization used
-# as the baseline condition in the paper.
+# Train the dense Elman RNN from the identity hidden-weight initialization.
 #
 # SEED:
 # Base random seed. Main.py automatically offsets this by run index so each

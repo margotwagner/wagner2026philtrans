@@ -6,8 +6,7 @@ set -euo pipefail
 # Author: Margot Wagner
 # Date: 2026-04-23
 #
-# Train the dense Elman RNN from the cyclic shift hidden-weight initialization used
-# as the baseline condition in the paper.
+# Train the dense Elman RNN from the cyclic shift hidden-weight initialization.
 #
 # SEED:
 # Base random seed. Main.py automatically offsets this by run index so each
@@ -46,31 +45,22 @@ COMMON_ARGS=(
 )
 
 # α = 0.0
-nohup python Main.py $COMMON \
-  --whh_path $INIT_ROOT/cycshift/alphasym0p00/Whh.npy \
-  --savename $RUN_ROOT/cycshift/alpha0p00/$CFG \
-  > $LOG_ROOT/cycshift_alpha0p00.out 2>&1 &
+echo "Running cyclic shift initialization experiment..."
+python Main.py "${COMMON_ARGS[@]}" --whh_path "$INIT_ROOT/$CFG/alphasym0p00/Whh.npy" --savename "$RUN_ROOT/$CFG/alpha0p00"
+echo "Saving alpha = 0.00 to: $RUN_ROOT/$CFG/alpha0p00"
 
 # α = 0.25
-nohup python Main.py $COMMON \
-  --whh_path $INIT_ROOT/cycshift/alphasym0p25/Whh.npy \
-  --savename $RUN_ROOT/cycshift/alpha0p25/$CFG \
-  > $LOG_ROOT/cycshift_alpha0p25.out 2>&1 &
+python Main.py "${COMMON_ARGS[@]}" --whh_path "$INIT_ROOT/$CFG/alphasym0p25/Whh.npy" --savename "$RUN_ROOT/$CFG/alpha0p25"
+echo "Saving alpha = 0.25 to: $RUN_ROOT/$CFG/alpha0p25"
 
 # α = 0.5
-nohup python Main.py $COMMON \
-  --whh_path $INIT_ROOT/cycshift/alphasym0p50/Whh.npy \
-  --savename $RUN_ROOT/cycshift/alpha0p50/$CFG \
-  > $LOG_ROOT/cycshift_alpha0p50.out 2>&1 &
+python Main.py "${COMMON_ARGS[@]}" --whh_path "$INIT_ROOT/$CFG/alphasym0p50/Whh.npy" --savename "$RUN_ROOT/$CFG/alpha0p50"
+echo "Saving alpha = 0.50 to: $RUN_ROOT/$CFG/alpha0p50"
 
 # α = 0.75
-nohup python Main.py $COMMON \
-  --whh_path $INIT_ROOT/cycshift/alphasym0p75/Whh.npy \
-  --savename $RUN_ROOT/cycshift/alpha0p75/$CFG \
-  > $LOG_ROOT/cycshift_alpha0p75.out 2>&1 &
+python Main.py "${COMMON_ARGS[@]}" --whh_path "$INIT_ROOT/$CFG/alphasym0p75/Whh.npy" --savename "$RUN_ROOT/$CFG/alpha0p75"
+echo "Saving alpha = 0.75 to: $RUN_ROOT/$CFG/alpha0p75"
 
 # α = 1.0
-nohup python Main.py $COMMON \
-  --whh_path $INIT_ROOT/cycshift/alphasym1p00/Whh.npy \
-  --savename $RUN_ROOT/cycshift/alpha1p00/$CFG \
-  > $LOG_ROOT/cycshift_alpha1p00.out 2>&1 &
+python Main.py "${COMMON_ARGS[@]}" --whh_path "$INIT_ROOT/$CFG/alphasym1p00/Whh.npy" --savename "$RUN_ROOT/$CFG/alpha1p00"
+echo "Saving alpha = 1.00 to: $RUN_ROOT/$CFG/alpha1p00"
