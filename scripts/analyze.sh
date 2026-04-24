@@ -7,16 +7,16 @@ set -euo pipefail
 #  3) aggregate_metrics  (condition-level tables)
 #
 # Usage:
-#   ./Analyze.sh BASE_DIR [RUNS_RANGE] [MODE]
+#   ./scripts/analyze.sh BASE_DIR [RUNS_RANGE] [MODE]
 #
 # Examples:
-#   ./Analyze.sh ./runs/ElmanRNN/cfg_tanh_linear_fi0_fo0_11252025/dense/random_pytorch 0-2
-#   ./Analyze.sh ./runs/ElmanRNN/cfg_tanh_linear_fi0_fo0_11252025/dense/mexican_hat/dog2/k5/alpha0p50 0-2 all
+#   ./scripts/analyze.sh ./data/runs/random 0-2
+#   ./scripts/analyze.sh ./data/runs/mexican_hat/dog2/k5/alpha0p50 0-2 all
 
 if [[ $# -lt 1 ]]; then
   echo "Usage: $0 BASE_DIR [RUNS_RANGE] [MODE]"
   echo "  BASE_DIR    Directory containing run_XX subdirs (e.g."
-  echo "              ./runs/ElmanRNN/cfg_tanh_linear_fi0_fo0_11252025/dense/random_pytorch)"
+  echo "              ./data/runs/random)"
   echo "  RUNS_RANGE  String for --runs (default: 0-2)"
   echo "  MODE        evaluate.py --mode (default: all)"
   exit 1
@@ -39,7 +39,7 @@ echo "========================================="
 echo
 
 # 1) Evaluate all runs for this condition
-python ../src/analyze/evaluate.py \
+python ./src/analyze/evaluate.py \
   --base-dir "$BASE_DIR" \
   --runs "$RUNS" \
   --mode "$MODE" \
@@ -50,14 +50,14 @@ echo "Finished evaluate.py"
 echo
 
 # 2) Run offline metrics generation
-python ../src/analyze/offline_metrics.py --ckpt "$BASE_DIR"
+python ./src/analyze/offline_metrics.py --ckpt "$BASE_DIR"
 
 echo
 echo "Finished offline_metrics.py"
 echo
 
 # 3) Aggregate across runs (condition-level tables)
-python ../src/analyze/aggregate_metrics.py --root "$BASE_DIR"
+python ./src/analyze/aggregate_metrics.py --root "$BASE_DIR"
 
 echo
 echo "Finished aggregate_metrics.py"

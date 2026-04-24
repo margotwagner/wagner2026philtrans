@@ -45,9 +45,10 @@ import torch.nn as nn
 from typing import List
 import re
 import numpy as np, pandas as pd, os
+from pathlib import Path
 import sys
 
-sys.path.append("../../src")
+sys.path.append(str(Path(__file__).resolve().parents[1]))
 
 from train.ElmanRNN import ElmanRNN
 

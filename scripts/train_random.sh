@@ -23,7 +23,7 @@ RUN_ROOT="./data/runs"
 
 mkdir -p "$RUN_ROOT"
 
-EPOCHS=1000
+EPOCHS=100000
 RUNS=1
 SEED=42
 CFG="random"
