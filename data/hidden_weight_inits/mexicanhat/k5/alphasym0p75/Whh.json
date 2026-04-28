@@ -1,0 +1,29 @@
+{
+  "shape": [
+    100,
+    100
+  ],
+  "mean": -5.185604168289615e-10,
+  "var": 0.0009791613556444645,
+  "fro_norm": 3.1291556358337402,
+  "sigma_max": 2.152391195297241,
+  "spectral_radius_abs_eigs": 2.152391195297241,
+  "asymmetry_ratio": 0.23684117197990417,
+  "structure": "DoG Mexican Hat (cyclic/circulant, DC-balanced, rho-targeted)",
+  "family": "mexican_hat_dog_balanced",
+  "hidden_n": 100,
+  "sigma_e": 20.0,
+  "sigma_i": 30.0,
+  "a": 1.0,
+  "diag_offset": -5,
+  "rho_target": 3.0,
+  "alpha": 0.75,
+  "decomposition": "W=\u03b1S+(1-\u03b1)A",
+  "norm": "raw",
+  "builder": "build_mexican_hat_dog_balanced",
+  "n": 100,
+  "b": 0.7279779373281011,
+  "rho_before_gain": 10.832583432249592,
+  "gain": 0.27694224731918043,
+  "kernel_sum_after_balance": 7.347455976969286e-13
+}
