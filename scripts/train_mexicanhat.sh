@@ -16,7 +16,7 @@ set -euo pipefail
 #   ./scripts/train_mexicanhat.sh
 # ============================================================================
 
-DATA=DATA="./data/inputs/Ns100_SeqN100_asym1.pth.tar"
+DATA="./data/inputs/Ns100_SeqN100_asym1.pth.tar"
 INIT_ROOT="./data/hidden_weight_inits"
 RUN_ROOT="./data/runs"
 
@@ -47,21 +47,19 @@ COMMON_ARGS=(
 
 # centered Mexican hat initialization (k = 0)
 echo "Running Mexican hat initialization experiment..."
-nohup python Main.py "${COMMON_ARGS[@]}" \
-  --whh_path $INIT_ROOT/k0/Whh.npy \
-  --savename $RUN_ROOT/k0/$CFG
+python Main.py "${COMMON_ARGS[@]}" --whh_path "$INIT_ROOT/$CFG/k0/Whh.npy" --savename "$RUN_ROOT/$CFG/k0"
 
 # α = 0.0
-nohup python Main.py "${COMMON_ARGS[@]}" --whh_path "$INIT_ROOT/$CFG/k5/alphasym0p00/Whh.npy" --savename "$RUN_ROOT/$CFG/k5/alpha0p00"
+python Main.py "${COMMON_ARGS[@]}" --whh_path "$INIT_ROOT/$CFG/k5/alphasym0p00/Whh.npy" --savename "$RUN_ROOT/$CFG/k5/alpha0p00"
 
 # α = 0.25
-nohup python Main.py "${COMMON_ARGS[@]}" --whh_path "$INIT_ROOT/$CFG/k5/alphasym0p25/Whh.npy" --savename "$RUN_ROOT/$CFG/k5/alpha0p25"
+python Main.py "${COMMON_ARGS[@]}" --whh_path "$INIT_ROOT/$CFG/k5/alphasym0p25/Whh.npy" --savename "$RUN_ROOT/$CFG/k5/alpha0p25"
 
 # α = 0.50
-nohup python Main.py "${COMMON_ARGS[@]}" --whh_path "$INIT_ROOT/$CFG/k5/alphasym0p50/Whh.npy" --savename "$RUN_ROOT/$CFG/k5/alpha0p50"
+python Main.py "${COMMON_ARGS[@]}" --whh_path "$INIT_ROOT/$CFG/k5/alphasym0p50/Whh.npy" --savename "$RUN_ROOT/$CFG/k5/alpha0p50"
 
 # α = 0.75
-nohup python Main.py "${COMMON_ARGS[@]}" --whh_path "$INIT_ROOT/$CFG/k5/alphasym0p75/Whh.npy" --savename "$RUN_ROOT/$CFG/k5/alpha0p75"
+python Main.py "${COMMON_ARGS[@]}" --whh_path "$INIT_ROOT/$CFG/k5/alphasym0p75/Whh.npy" --savename "$RUN_ROOT/$CFG/k5/alpha0p75"
 
 # α = 1.0
-nohup python Main.py "${COMMON_ARGS[@]}" --whh_path "$INIT_ROOT/$CFG/k5/alphasym1p00/Whh.npy" --savename "$RUN_ROOT/$CFG/k5/alpha1p00"
+python Main.py "${COMMON_ARGS[@]}" --whh_path "$INIT_ROOT/$CFG/k5/alphasym1p00/Whh.npy" --savename "$RUN_ROOT/$CFG/k5/alpha1p00"
