@@ -6,18 +6,18 @@ Usage
 -----
 Pass either a run directory:
 
-    python src/analyze/plot_run_polar_trajectories.py \
-        ../data/runs/prediction/.../run_09
+    python src/figures/plot_run_polar_trajectories.py \
+        ./data/runs/prediction/.../run_09
 
 or a specific checkpoint:
 
-    python src/analyze/plot_run_polar_trajectories.py \
-        ../data/runs/prediction/.../run_09/model.pth.tar
+    python src/figures/plot_run_polar_trajectories.py \
+        ./data/runs/prediction/.../run_09/model.pth.tar
 
 Optionally save the figure:
 
-    python src/analyze/plot_run_polar_trajectories.py \
-        ../data/runs/prediction/.../run_09 \
+    python src/figures/plot_run_polar_trajectories.py \
+        ./data/runs/prediction/.../run_09 \
         --savepath ../data/figures/run_09_polar.png \
         --fontsize 22 \
         --linewidth 4
