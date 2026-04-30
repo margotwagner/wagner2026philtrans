@@ -12,6 +12,7 @@ set -euo pipefail
 # Examples:
 #   ./scripts/analyze.sh ./data/runs/random 0-2
 #   ./scripts/analyze.sh ./data/runs/mexican_hat/dog2/k5/alpha0p50 0-2 all
+#   ./scripts/analyze.sh ./data/runs/identity
 
 if [[ $# -lt 1 ]]; then
   echo "Usage: $0 BASE_DIR [RUNS_RANGE] [MODE]"

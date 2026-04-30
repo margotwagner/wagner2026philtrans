@@ -15,14 +15,32 @@ Example:
     python ./src/figures/figure5_training_dynamics.py \
         ./data/runs/random \
         ./data/runs/identity \
-        --labels random α=0.00 \
-        --savepath ./data/figures/figure5/loss_vs_epoch.png \
+        ./data/runs/cycshift/alpha0p00 \
+        --labels random identity "cyclic shift α₀=0.00" \
+        --savepath ./data/figures/figure5/random_identity_cyc.png \
         --fontsize 16 \
         --logx \
         --logy \
         --no-slope \
         --mh-color "#2c7fb8" \
         --lw 4
+
+    python ./src/figures/figure5_training_dynamics.py \
+            ./data/runs/random \
+            ./data/runs/identity \
+            ./data/runs/cycshift/alpha0p00 \
+            ./data/runs/cycshift/alpha0p25 \
+            ./data/runs/cycshift/alpha0p50 \
+            ./data/runs/cycshift/alpha0p75 \
+            ./data/runs/cycshift/alpha1p00 \
+            --labels random identity "cyclic shift α₀=0.00" "cyclic shift α₀=0.25" "cyclic shift α₀=0.50" "cyclic shift α₀=0.75" "cyclic shift α₀=1.00" \
+            --savepath ./data/figures/figure5/random_identity_cyc.png \
+            --fontsize 16 \
+            --logx \
+            --logy \
+            --no-slope \
+            --mh-color "#2c7fb8" \
+            --lw 4
 """
 
 import argparse
