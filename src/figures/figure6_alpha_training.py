@@ -16,21 +16,21 @@ Expected columns in each run_level.csv:
     - run_id is optional
 
 Example:
-    python ./src/figures/figure3_alpha_time_series_mh_style.py \
+    python ./src/figures/figure6_alpha_training.py \
         --condition-roots \
-        ./data/runs/prediction/cfg_tanh_sigmoid_fi5_fo5_12092025/dense/random_pytorch/cfg_tanh_sigmoid_fi5_fo5_12092025 \
-        ./data/runs/prediction/cfg_tanh_sigmoid_fi5_fo5_12092025/dense/mexican_hat/dog_tuned/k5/alpha0p00/cfg_tanh_sigmoid_fi5_fo5_12092025 \
-        ./data/runs/prediction/cfg_tanh_sigmoid_fi5_fo5_12092025/dense/mexican_hat/dog_tuned/k5/alpha0p10/cfg_tanh_sigmoid_fi5_fo5_12092025 \
-        --savepath ./data/figures/figure3/alpha_time_series.png \
+        ./data/runs/random \
+        ./data/runs/identity \
+        ./data/runs/cycshift/alpha0p00 \
+        --savepath ./data/figures/figure6/random_identity_cyc.png \
         --fontsize 16 \
         --median-lw 4 \
         --mh-color '#2c7fb8'
 
 You can also use one or more glob patterns:
-    python ./src/figures/figure3_alpha_time_series_mh_style.py \
-        --condition-globs './data/runs/prediction/cfg_tanh_sigmoid_fi5_fo5_12092025/dense/mexican_hat/dog_tuned/k5/alpha*/cfg_tanh_sigmoid_fi5_fo5_12092025' \
-        --condition-roots './data/runs/prediction/cfg_tanh_sigmoid_fi5_fo5_12092025/dense/random_pytorch/cfg_tanh_sigmoid_fi5_fo5_12092025' \
-        --savepath ./data/figures/figure3/alpha_time_series.png
+    python ./src/figures/figure6_alpha_training.py \
+        --condition-globs './data/runs/random' \
+        --condition-roots './data/runs/cycshift/alpha*/' \
+        --savepath ./data/figures/figure6/alpha_time_series.png
 """
 
 from __future__ import annotations
@@ -190,7 +190,7 @@ def fig3_alpha_time_series_mh_style(
                 continue
             order = np.argsort(t)
 
-            if "random_pytorch" in cond_id:
+            if "random" in cond_id:
                 color = "k"
                 line_alpha = 1.0
             elif "mexican_hat" in cond_id:
@@ -215,7 +215,7 @@ def fig3_alpha_time_series_mh_style(
 
         for cond_id_raw, cdf in df_rl.groupby("condition_id"):
             cond_id = str(cond_id_raw)
-            if "random_pytorch" in cond_id:
+            if "random" in cond_id:
                 color = "k"
                 line_alpha = 1.0
             elif "mexican_hat" in cond_id:
@@ -264,7 +264,7 @@ def fig3_alpha_time_series_mh_style(
     out_handles: list[Line2D] = []
     out_labels: list[str] = []
 
-    if any("random_pytorch" in str(cid) for cid in df_rl["condition_id"].unique()):
+    if any("random" in str(cid) for cid in df_rl["condition_id"].unique()):
         out_handles.append(Line2D([0], [0], color="k", lw=median_lw, alpha=1.0))
         out_labels.append("random")
 
