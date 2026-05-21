@@ -75,7 +75,7 @@ echo "Running cyclic-shift initialization experiments..."
 echo "============================================================"
 
 for ALPHA in "${ALPHAS[@]}"; do
-  WHH_PATH="$INIT_ROOT/cyclic_shift/alphasym${ALPHA}/Whh.npy"
+  WHH_PATH="$INIT_ROOT/cyclic_shift/alpha${ALPHA}/Whh.npy"
   SAVE_DIR="$RUN_ROOT/alpha${ALPHA}"
   LOG="$SAVE_DIR/train_$(date +%Y%m%d_%H%M%S).log"
 

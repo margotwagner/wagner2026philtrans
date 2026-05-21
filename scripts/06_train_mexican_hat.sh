@@ -120,7 +120,7 @@ ALPHAS=(
  for ALPHA in "${ALPHAS[@]}"; do
   run_condition \
     "k5 alpha=${ALPHA}" \
-    "$INIT_ROOT/mexican_hat/k5/alphasym${ALPHA}/Whh.npy" \
+    "$INIT_ROOT/mexican_hat/k5/alpha${ALPHA}/Whh.npy" \
     "$RUN_ROOT/k5/alpha${ALPHA}"
 done
 

@@ -58,14 +58,14 @@ def mix_ratio_tag(alpha: float) -> str:
 
     Examples
     --------
-    0.00 -> ``sym0p00``
-    0.25 -> ``sym0p25``
-    1.00 -> ``sym1p00``
+    0.00 -> ``0p00``
+    0.25 -> ``0p25``
+    1.00 -> ``1p00``
     """
     pct = int(round(float(alpha) * 100))
     major = pct // 100
     minor = pct % 100
-    return f"sym{major}p{minor:02d}"
+    return f"{major}p{minor:02d}"
 
 
 # -----------------------------------------------------------------------------
