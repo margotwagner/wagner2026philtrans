@@ -208,7 +208,7 @@ def fig1_loss_vs_epoch(
             label = None
             color = mh_color
             line_alpha = mh_alpha_map.get(cond_id, 0.6)
-        elif "random_pytorch" in cond_id:
+        elif "random" in cond_id:
             color = "k"
             line_alpha = 1.0
         else:
