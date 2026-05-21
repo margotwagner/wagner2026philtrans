@@ -2,13 +2,13 @@
 set -euo pipefail
 
 # ============================================================================
-# 04_train_identity.sh
+# 06_train_identity.sh
 #
 # Train the dense Elman RNN using the identity hidden-weight initialization.
 #
 # Run from the repository root:
 #
-#   bash scripts/04_train_identity.sh
+#   bash scripts/06_train_identity.sh
 #
 # Outputs
 # -------

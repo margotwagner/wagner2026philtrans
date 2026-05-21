@@ -26,9 +26,9 @@ set -euo pipefail
 # Must be run after training:
 #
 #   bash scripts/03_train_random.sh
-#   bash scripts/04_train_identity.sh
+#   bash scripts/04_train_mexican_hat.sh
 #   bash scripts/05_train_cycshift.sh
-#   bash scripts/06_train_mexican_hat.sh
+#   bash scripts/06_train_identity.sh
 # ============================================================================
 
 RUNS_ROOT="data/runs"

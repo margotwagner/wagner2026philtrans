@@ -2,13 +2,13 @@
 set -euo pipefail
 
 # ============================================================================
-# 06_train_mexican_hat.sh
+# 04_train_mexican_hat.sh
 #
 # Train the dense Elman RNN using Mexican-hat hidden-weight initializations.
 #
 # Run from the repository root:
 #
-#   bash scripts/06_train_mexican_hat.sh
+#   bash scripts/04_train_mexican_hat.sh
 #
 # Outputs
 # -------

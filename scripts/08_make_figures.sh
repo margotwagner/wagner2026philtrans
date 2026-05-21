@@ -15,6 +15,15 @@ set -euo pipefail
 # Must be run after:
 #
 #   bash scripts/07_analyze.sh
+#
+# Note: this script assumes the following have been run:
+#
+#   bash scripts/01_build_inputs.sh
+#   bash scripts/02_build_hidden_weights.sh
+#   bash scripts/03_train_random.sh
+#   bash scripts/04_train_mexican_hat.sh
+#   bash scripts/07_analyze.sh
+#
 # ============================================================================
 
 FIG_ROOT="data/figures"
@@ -47,9 +56,10 @@ echo
 echo "Generating Figure 1..."
 
 if [[ ! -f "data/hidden_weight_inits/mexican_hat/k5/alpha0p75/Whh.npy" ]]; then
-  echo "ERROR: Figure 1 input not found."
+  echo "ERROR: Figure 1 input not found [Mexican hat]."
   exit 1
 fi
+
 
 # Mexican hat initial connectivity with α₀=0.75
 python src/figures/figure1_initial_connectivity.py \
@@ -59,11 +69,14 @@ python src/figures/figure1_initial_connectivity.py \
   --trace-lw 4 \
   --no-show
 
+if [[ ! -f "data/hidden_weight_inits/random/seed000/Whh.npy" ]]; then
+  echo "ERROR: Figure 1 input not found [Random]."
+  exit 1
+fi
+
 # Random initialization baseline
 python src/figures/figure1_initial_connectivity.py \
   data/hidden_weight_inits/random/seed000/Whh.npy \
-  --savepath "$FIG_ROOT/figure1/random/random.png" \
-  --alpha-label 0.75 \
   --trace-lw 4 \
   --no-show
 
@@ -123,7 +136,7 @@ python src/figures/figure4_learned_weights.py \
 # Random initialization baseline
 python src/figures/figure4_learned_weights.py \
   data/runs/random \
-  --savepath "$FIG_ROOT/figure4/random.png" \
+  --savepath "$FIG_ROOT/figure4/random/random.png" \
   --fontsize 14 \
   --no-show
 
@@ -143,7 +156,7 @@ python src/figures/figure5_decomposed_weights.py \
 # Random initialization baseline
 python src/figures/figure5_decomposed_weights.py \
   data/runs/random \
-  --savepath "$FIG_ROOT/figure5/random" \
+  --savepath "$FIG_ROOT/figure5/random/random" \
   --fontsize 14 \
   --no-show
 
@@ -153,7 +166,6 @@ python src/figures/figure5_decomposed_weights.py \
 echo
 echo "Generating Figure 6..."
 
-# Mexican hat initial connectivity with α₀=0.75
 python src/figures/figure6_training_dynamics.py \
   data/runs/random \
   data/runs/mexican_hat/k5/alpha0p75 \
