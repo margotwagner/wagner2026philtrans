@@ -17,17 +17,17 @@ This mirrors the inspection workflow used in ``hidden-weight-builder.ipynb``,
 but keeps the plotting in ``src/figures`` rather than in the setup/build stage.
 
 Example:
-    python ./src/figures/figure0_initial_connectivity.py \
+    python ./src/figures/figure1_initial_connectivity.py \
         ./data/hidden_weight_inits/mexicanhat/k5/alphasym0p75/Whh.npy \
-        --savepath ./data/figures/figure0/mexicanhat_alpha0p75.png \
+        --savepath ./data/figures/figure1/mexicanhat/k5/alpha0p75.png \
         --alpha-label 0.75 \
         --trace-lw 4 \
         --no-show
 
 This writes:
-    ./data/figures/figure0/mexicanhat_alpha0p75.png
-    ./data/figures/figure0/mexicanhat_alpha0p75_symmetric.png
-    ./data/figures/figure0/mexicanhat_alpha0p75_antisymmetric.png
+    ./data/figures/figure1/mexicanhat/k5/alpha0p75.png
+    ./data/figures/figure1/mexicanhat/k5/alpha0p75_symmetric.png
+    ./data/figures/figure1/mexicanhat/k5/alpha0p75_antisymmetric.png
 """
 
 import argparse

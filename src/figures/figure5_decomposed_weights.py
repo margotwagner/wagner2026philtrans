@@ -16,9 +16,9 @@ Example
 -------
 Run from the repository root:
 
-    python ./src/figures/figure4_decomposed_weights.py \
+    python ./src/figures/figure5_decomposed_weights.py \
         ./data/runs/random \
-        --savepath ./data/figures/figure4/random \
+        --savepath ./data/figures/figure5/random \
         --fontsize 14
 
 Outputs

@@ -23,7 +23,7 @@ Optionally save the figure:
         --linewidth 4
 
 Example:
-    python ./src/figures/figure1_polar_trajectory.py ./data/runs/random/run_00 --fontsize 22 --linewidth 4 --savepath ./data/figures/figure1/random_run_00.png
+    python ./src/figures/figure2_polar_trajectory.py ./data/runs/random/run_00 --fontsize 22 --linewidth 4 --savepath ./data/figures/figure2/random/run_00.png
 """
 
 import argparse

@@ -21,7 +21,7 @@ Expected files (produced by evaluate.py):
     <stub>_prediction_hidden.npy
     
 Example:
-    python ./src/figures/figure2_hidden_activity.py ./data/runs/random/run_00/ --savepath ./data/figures/figure2/random_run_00.png
+    python ./src/figures/figure3_hidden_activity.py ./data/runs/random/run_00/ --savepath ./data/figures/figure3/random_run_00.png
 """
 
 import argparse

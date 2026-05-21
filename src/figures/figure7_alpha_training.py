@@ -16,21 +16,21 @@ Expected columns in each run_level.csv:
     - run_id is optional
 
 Example:
-    python ./src/figures/figure6_alpha_training.py \
+    python ./src/figures/figure7_alpha_training.py \
         --condition-roots \
         ./data/runs/random \
         ./data/runs/identity \
         ./data/runs/cycshift/alpha0p00 \
-        --savepath ./data/figures/figure6/random_identity_cyc.png \
+        --savepath ./data/figures/figure7/random_identity_cyc.png \
         --fontsize 16 \
         --median-lw 4 \
         --mh-color '#2c7fb8'
 
 You can also use one or more glob patterns:
-    python ./src/figures/figure6_alpha_training.py \
+    python ./src/figures/figure7_alpha_training.py \
         --condition-globs './data/runs/random' \
         --condition-roots './data/runs/cycshift/alpha*/' \
-        --savepath ./data/figures/figure6/alpha_time_series.png
+        --savepath ./data/figures/figure7/alpha_time_series.png
 """
 
 from __future__ import annotations

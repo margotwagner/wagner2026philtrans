@@ -12,12 +12,12 @@ where each CSV has columns:
     epoch, loss
 
 Example:
-    python ./src/figures/figure5_training_dynamics.py \
+    python ./src/figures/figure6_training_dynamics.py \
         ./data/runs/random \
         ./data/runs/identity \
         ./data/runs/cycshift/alpha0p00 \
         --labels random identity "cyclic shift α₀=0.00" \
-        --savepath ./data/figures/figure5/random_identity_cyc.png \
+        --savepath ./data/figures/figure6/random_identity_cyc.png \
         --fontsize 16 \
         --logx \
         --logy \
@@ -25,7 +25,7 @@ Example:
         --mh-color "#2c7fb8" \
         --lw 4
 
-    python ./src/figures/figure5_training_dynamics.py \
+    python ./src/figures/figure6_training_dynamics.py \
             ./data/runs/random \
             ./data/runs/identity \
             ./data/runs/cycshift/alpha0p00 \
@@ -34,7 +34,7 @@ Example:
             ./data/runs/cycshift/alpha0p75 \
             ./data/runs/cycshift/alpha1p00 \
             --labels random identity "cyclic shift α₀=0.00" "cyclic shift α₀=0.25" "cyclic shift α₀=0.50" "cyclic shift α₀=0.75" "cyclic shift α₀=1.00" \
-            --savepath ./data/figures/figure5/random_identity_cyc.png \
+            --savepath ./data/figures/figure6/random_identity_cyc.png \
             --fontsize 16 \
             --logx \
             --logy \

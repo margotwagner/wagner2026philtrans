@@ -18,20 +18,20 @@ function name is more general/descriptive.
 
 Example
 -------
-python ./src/figures/figure3_learned_recurrent.py \
+python ./src/figures/figure4_learned_recurrent.py \
     ./data/runs/random \
-    --savepath ./data/figures/figure3 \
+    --savepath ./data/figures/figure4 \
     --device cpu \
     --outlier-real-thr 2.0 \
     --fontsize 14
 
 Optional save example
 ---------------------
-python ./src/figures/figure3_learned_recurrent.py <CONFIG_PATH> \
+python ./src/figures/figure4_learned_recurrent.py <CONFIG_PATH> \
     --savepath ./data/figures/recurrent_connectivity_summary.png
     
 Example
-python ./src/figures/figure3_learned_weights.py ./data/runs/random --savepath ./data/figures/figure3/random.png --fontsize 14
+python ./src/figures/figure4_learned_weights.py ./data/runs/random --savepath ./data/figures/figure4/random.png --fontsize 14
 """
 
 from __future__ import annotations
