@@ -25,7 +25,7 @@ Build all default hidden-weight initializations:
 
 Build only cyclic-shift and Mexican-hat initializations:
 
-    python src/setup/build_hidden_weights.py --families cycshift mexicanhat
+    python src/setup/build_hidden_weights.py --families cyclic_shift mexican_hat
 
 Use a different output directory:
 
@@ -420,7 +420,7 @@ def build_identity_family(
     )
 
 
-def build_cycshift_family(
+def build_cyclic_shift_family(
     output_dir: Path,
     hidden_n: int,
     mix_ratios: Sequence[float],
@@ -432,21 +432,21 @@ def build_cycshift_family(
     W = build_shift(n=hidden_n, value=1.0, offset=1, cyclic=True)
 
     ok = is_circulant(W, tol=1e-7)
-    print(f"[cycshift raw] circulant? {ok} (tol=1e-7)")
+    print(f"[cyclic_shift raw] circulant? {ok} (tol=1e-7)")
     if not ok:
         raise RuntimeError("Expected cyclic-shift matrix to be circulant.")
 
     S = 0.5 * (W + W.T)
     A = 0.5 * (W - W.T)
 
-    dense_root = output_dir / "cycshift"
+    dense_root = output_dir / "cyclic_shift"
 
     for alpha in mix_ratios:
         alpha = float(alpha)
         W_mix = (alpha * S + (1.0 - alpha) * A).astype(np.float32)
 
         ok_mix = is_circulant(W_mix, tol=1e-7)
-        print(f"[cycshift alpha={alpha:.2f}] circulant? {ok_mix} (tol=1e-7)")
+        print(f"[cyclic_shift alpha={alpha:.2f}] circulant? {ok_mix} (tol=1e-7)")
 
         sub = mix_ratio_tag(alpha)
         save_dir_dense = dense_root / f"alpha{sub}"
@@ -464,7 +464,7 @@ def build_cycshift_family(
         save_matrix(W_mix, save_dir_dense, "Whh", meta=meta_dense, overwrite=overwrite)
 
 
-def build_mexicanhat_family(
+def build_mexican_hat_family(
     output_dir: Path,
     hidden_n: int,
     mix_ratios: Sequence[float],
@@ -498,7 +498,7 @@ def build_mexicanhat_family(
     }
 
     rho_target_k0 = 2.2
-    dense_root = output_dir / "mexicanhat"
+    dense_root = output_dir / "mexican_hat"
 
     for dog_name, params in dog_configs:
         for offset_tag, diag_offset in offset_configs:
@@ -521,7 +521,7 @@ def build_mexicanhat_family(
                 )
 
                 ok = is_circulant(W, tol=1e-7)
-                print(f"[mexicanhat {offset_tag}] circulant? {ok} (tol=1e-7)")
+                print(f"[mexican_hat {offset_tag}] circulant? {ok} (tol=1e-7)")
 
                 base_meta = {
                     "structure": "DoG Mexican Hat (cyclic, DC-balanced, rho-targeted)",
@@ -579,7 +579,7 @@ def build_mexicanhat_family(
                     W_mix = (alpha * S + (1.0 - alpha) * A).astype(np.float32)
 
                     ok_mix = is_circulant(W_mix, tol=1e-7)
-                    print(f"[mexicanhat {offset_tag} alpha={alpha:.2f}] circulant? {ok_mix} (tol=1e-7)")
+                    print(f"[mexican_hat {offset_tag} alpha={alpha:.2f}] circulant? {ok_mix} (tol=1e-7)")
 
                     meta = {
                         "structure": "DoG Mexican Hat (cyclic, DC-balanced, rho-targeted)",
@@ -647,8 +647,8 @@ def parse_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
     parser.add_argument(
         "--families",
         nargs="+",
-        default=["random", "identity", "cycshift", "mexicanhat"],
-        choices=["random", "identity", "cycshift", "mexicanhat"],
+        default=["random", "identity", "cyclic_shift", "mexican_hat"],
+        choices=["random", "identity", "cyclic_shift", "mexican_hat"],
         help="Which hidden-weight families to build.",
     )
     parser.add_argument(
@@ -699,16 +699,16 @@ def main(argv: Optional[Sequence[str]] = None) -> None:
             overwrite=args.overwrite,
         )
 
-    if "cycshift" in args.families:
-        build_cycshift_family(
+    if "cyclic_shift" in args.families:
+        build_cyclic_shift_family(
             output_dir=args.output_dir,
             hidden_n=args.hidden_n,
             mix_ratios=args.mix_ratios,
             overwrite=args.overwrite,
         )
 
-    if "mexicanhat" in args.families:
-        build_mexicanhat_family(
+    if "mexican_hat" in args.families:
+        build_mexican_hat_family(
             output_dir=args.output_dir,
             hidden_n=args.hidden_n,
             mix_ratios=args.mix_ratios,
