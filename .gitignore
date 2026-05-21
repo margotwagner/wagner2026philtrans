@@ -1,5 +1,3 @@
 *__pycache__*
-data/runs/
+data/*
 nohup*
-data/figures/
-data/inputs/
