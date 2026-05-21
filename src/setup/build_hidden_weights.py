@@ -347,7 +347,7 @@ def is_circulant(W: np.ndarray, tol: float = 1e-6, verbose: bool = False) -> boo
 # -----------------------------------------------------------------------------
 
 
-def build_random_pytorch_family(
+def build_random_family(
     output_dir: Path,
     hidden_n: int,
     seeds: Sequence[int],
@@ -359,7 +359,7 @@ def build_random_pytorch_family(
     This intentionally uses ``torch.nn.RNN`` so the saved matrix corresponds to
     PyTorch's default ``weight_hh_l0`` initialization for an Elman-style RNN.
     """
-    dense_root = output_dir / "random_pytorch"
+    dense_root = output_dir / "random"
 
     for seed in seeds:
         print(f"\n=== Vanilla PyTorch random, seed={seed} ===")
@@ -685,7 +685,7 @@ def main(argv: Optional[Sequence[str]] = None) -> None:
     args.output_dir.mkdir(parents=True, exist_ok=True)
 
     if "random" in args.families:
-        build_random_pytorch_family(
+        build_random_family(
             output_dir=args.output_dir,
             hidden_n=args.hidden_n,
             seeds=args.seeds,

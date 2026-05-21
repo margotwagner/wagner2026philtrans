@@ -47,7 +47,7 @@ if [[ ! -f "$DATA" ]]; then
   exit 1
 fi
 
-if [[ ! -f "$INIT_ROOT/random_pytorch/seed000/Whh.npy" ]]; then
+if [[ ! -f "$INIT_ROOT/random/seed000/Whh.npy" ]]; then
   echo "ERROR: Random initialization not found."
   echo
   echo "Run:"
@@ -96,7 +96,7 @@ LOG="$RUN_ROOT/train_$(date +%Y%m%d_%H%M%S).log"
 
 python "$MAIN_SCRIPT" \
   "${COMMON_ARGS[@]}" \
-  --whh_path "$INIT_ROOT/random_pytorch/seed000/Whh.npy" \
+  --whh_path "$INIT_ROOT/random/seed000/Whh.npy" \
   --savename "$RUN_ROOT" \
   2>&1 | tee "$LOG"
 
