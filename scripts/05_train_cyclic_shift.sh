@@ -2,20 +2,20 @@
 set -euo pipefail
 
 # ============================================================================
-# 05_train_cycshift.sh
+# 05_train_cyclic_shift.sh
 #
 # Train the dense Elman RNN using cyclic-shift hidden-weight initializations
 # across alpha values.
 #
 # Run from the repository root:
 #
-#   bash scripts/05_train_cycshift.sh
+#   bash scripts/05_train_cyclic_shift.sh
 #
 # Outputs
 # -------
 # Training checkpoints and logs are written to:
 #
-#   data/runs/cycshift/
+#   data/runs/cyclic_shift/
 #
 # Requirements
 # ------------
@@ -27,7 +27,7 @@ set -euo pipefail
 
 DATA="data/inputs/Ns100_SeqN100_asym1.pth.tar"
 INIT_ROOT="data/hidden_weight_inits"
-RUN_ROOT="data/runs/cycshift"
+RUN_ROOT="data/runs/cyclic_shift"
 MAIN_SCRIPT="Main.py"
 
 mkdir -p "$RUN_ROOT"
@@ -75,7 +75,7 @@ echo "Running cyclic-shift initialization experiments..."
 echo "============================================================"
 
 for ALPHA in "${ALPHAS[@]}"; do
-  WHH_PATH="$INIT_ROOT/cycshift/alphasym${ALPHA}/Whh.npy"
+  WHH_PATH="$INIT_ROOT/cyclic_shift/alphasym${ALPHA}/Whh.npy"
   SAVE_DIR="$RUN_ROOT/alpha${ALPHA}"
   LOG="$SAVE_DIR/train_$(date +%Y%m%d_%H%M%S).log"
 
