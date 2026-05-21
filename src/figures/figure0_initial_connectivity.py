@@ -2,17 +2,32 @@
 """
 Plot initial recurrent connectivity.
 
-Creates a 3-panel figure:
+Creates 3-panel figures showing:
 1. Recurrent weight heatmap
 2. Diagonal-offset trace or band mean
 3. Eigenspectrum with optional unit circle
+
+By default, this script now saves/plots the full initial recurrent matrix and
+its symmetric and antisymmetric components:
+
+    W_sym  = 0.5 * (W + W.T)
+    W_asym = 0.5 * (W - W.T)
+
+This mirrors the inspection workflow used in ``hidden-weight-builder.ipynb``,
+but keeps the plotting in ``src/figures`` rather than in the setup/build stage.
 
 Example:
     python ./src/figures/figure0_initial_connectivity.py \
         ./data/hidden_weight_inits/mexicanhat/k5/alphasym0p75/Whh.npy \
         --savepath ./data/figures/figure0/mexicanhat_alpha0p75.png \
         --alpha-label 0.75 \
-        --trace-lw 4
+        --trace-lw 4 \
+        --no-show
+
+This writes:
+    ./data/figures/figure0/mexicanhat_alpha0p75.png
+    ./data/figures/figure0/mexicanhat_alpha0p75_symmetric.png
+    ./data/figures/figure0/mexicanhat_alpha0p75_antisymmetric.png
 """
 
 import argparse
@@ -21,6 +36,48 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.lines import Line2D
+
+
+def decompose_sym_asym(W):
+    """
+    Decompose a square matrix into symmetric and antisymmetric components.
+
+    Parameters
+    ----------
+    W : array-like, shape (N, N)
+        Square recurrent weight matrix.
+
+    Returns
+    -------
+    W_sym : np.ndarray
+        Symmetric component, 0.5 * (W + W.T).
+    W_asym : np.ndarray
+        Antisymmetric/skew-symmetric component, 0.5 * (W - W.T).
+    """
+    W = np.asarray(W)
+
+    if W.ndim != 2 or W.shape[0] != W.shape[1]:
+        raise ValueError(f"W must be square 2D, got shape={W.shape}")
+
+    W_sym = 0.5 * (W + W.T)
+    W_asym = 0.5 * (W - W.T)
+
+    return W_sym.astype(np.float32), W_asym.astype(np.float32)
+
+
+def component_savepath(savepath, suffix):
+    """
+    Add a suffix before the file extension.
+
+    Examples
+    --------
+    figure.png + "symmetric" -> figure_symmetric.png
+    """
+    if savepath is None:
+        return None
+
+    savepath = Path(savepath)
+    return savepath.with_name(f"{savepath.stem}_{suffix}{savepath.suffix}")
 
 
 def plot_init(
@@ -197,9 +254,76 @@ def plot_init(
         plt.close(fig)
 
 
+def plot_init_with_components(
+    W,
+    title="Weights",
+    suptitle=None,
+    show_unit_circle=True,
+    unit_radius=1.0,
+    trace_band_summary="trace",
+    trace_lw=2.0,
+    savepath=None,
+    show=True,
+    include_components=True,
+):
+    """
+    Plot the full initial matrix and, optionally, its symmetric and
+    antisymmetric components.
+
+    If ``savepath`` is provided and ``include_components=True``, component
+    figures are saved by appending ``_symmetric`` and ``_antisymmetric`` before
+    the extension.
+    """
+    plot_init(
+        W,
+        title=title,
+        suptitle=suptitle,
+        show_unit_circle=show_unit_circle,
+        unit_radius=unit_radius,
+        trace_band_summary=trace_band_summary,
+        trace_lw=trace_lw,
+        savepath=savepath,
+        show=show,
+    )
+
+    if not include_components:
+        return
+
+    W_sym, W_asym = decompose_sym_asym(W)
+
+    base = suptitle if suptitle is not None else title
+
+    plot_init(
+        W_sym,
+        title=f"{title} symmetric component",
+        suptitle=f"{base}: symmetric component",
+        show_unit_circle=show_unit_circle,
+        unit_radius=unit_radius,
+        trace_band_summary=trace_band_summary,
+        trace_lw=trace_lw,
+        savepath=component_savepath(savepath, "symmetric"),
+        show=show,
+    )
+
+    plot_init(
+        W_asym,
+        title=f"{title} antisymmetric component",
+        suptitle=f"{base}: antisymmetric component",
+        show_unit_circle=show_unit_circle,
+        unit_radius=unit_radius,
+        trace_band_summary=trace_band_summary,
+        trace_lw=trace_lw,
+        savepath=component_savepath(savepath, "antisymmetric"),
+        show=show,
+    )
+
+
 def parse_args():
     parser = argparse.ArgumentParser(
-        description="Plot initial recurrent connectivity from a Whh.npy file."
+        description=(
+            "Plot initial recurrent connectivity from a Whh.npy file, including "
+            "the full matrix and optionally its symmetric/antisymmetric components."
+        )
     )
 
     parser.add_argument(
@@ -212,7 +336,11 @@ def parse_args():
         "--savepath",
         type=str,
         default=None,
-        help="Optional path to save the figure.",
+        help=(
+            "Optional path to save the full-matrix figure. If components are "
+            "enabled, component figures are saved with _symmetric and "
+            "_antisymmetric suffixes."
+        ),
     )
 
     parser.add_argument(
@@ -264,6 +392,12 @@ def parse_args():
     )
 
     parser.add_argument(
+        "--no-components",
+        action="store_true",
+        help="Only plot the full matrix; do not plot symmetric/antisymmetric components.",
+    )
+
+    parser.add_argument(
         "--no-show",
         action="store_true",
         help="Save only; do not display interactively.",
@@ -285,7 +419,7 @@ def main():
         if suptitle is None:
             suptitle = f"Mexican hat initial connectivity (α={args.alpha_label})"
 
-    plot_init(
+    plot_init_with_components(
         W,
         title=title,
         suptitle=suptitle,
@@ -295,6 +429,7 @@ def main():
         trace_lw=args.trace_lw,
         savepath=args.savepath,
         show=not args.no_show,
+        include_components=not args.no_components,
     )
 
 

@@ -2,11 +2,7 @@
 """
 Create decomposed Fig. 4 recurrent-weight summary plots.
 
-This script loads all run_* checkpoint directories under a condition/configuration
-folder, extracts the final recurrent weight matrix for each run, optionally sorts
-neurons by peak hidden-state time on the saved training sequence, averages weights
-across runs, decomposes the mean matrix into symmetric and antisymmetric parts,
-and plots each component as a separate three-panel figure:
+This script loads all run_* checkpoint directories under a condition/configuration folder, extracts the final recurrent weight matrix for each run, optionally sorts neurons by peak hidden-state time on the saved training sequence, averages weights across runs, decomposes the mean matrix into symmetric and antisymmetric parts, and plots each component as a separate three-panel figure:
 
     1. recurrent connectivity heatmap
     2. diagonal trace summary across runs
