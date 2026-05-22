@@ -41,9 +41,9 @@ if [[ ! -f "$DATA" ]]; then
   exit 1
 fi
 
-EPOCHS=100000
-RUNS=3
-SEED=42
+EPOCHS="${EPOCHS:-100000}"
+RUNS="${RUNS:-3}"
+SEED="${SEED:-42}"
 
 COMMON_ARGS=(
   --input "$DATA"

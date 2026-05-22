@@ -22,7 +22,8 @@
 	supplemental_analyze \
 	supplemental \
 	check \
-	clean
+	clean \
+	quick_test
 
 # --------------------------------------------------------------------------
 # Main manuscript pipeline
@@ -77,3 +78,6 @@ check:
 
 clean:
 	rm -rf data/figures
+
+quick_test:
+	bash scripts/quick_test.sh
