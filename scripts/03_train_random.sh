@@ -102,5 +102,8 @@ python "$MAIN_SCRIPT" \
 
 echo
 echo "Finished random initialization experiment."
+echo "Logs saved to:"
+echo "  $LOG"
 echo "Outputs saved to:"
 echo "  $RUN_ROOT"
+echo
