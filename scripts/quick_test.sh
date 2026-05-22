@@ -37,6 +37,7 @@ EPOCHS=5 RUNS=1 SEED=42 bash scripts/04_train_mexican_hat.sh
 # Run analysis and figure generation.
 bash scripts/05_analyze.sh
 bash scripts/06_make_figures.sh
+bash scripts/07_make_stdp_figure.sh
 
 echo
 echo "============================================================"

@@ -43,13 +43,20 @@ train_mexican_hat: inputs weights
 
 train: train_random train_mexican_hat
 
-analyze: train
+check_runs:
+	@test -d data/runs/random/run_00 || \
+		(echo "Missing random run data. Run: make train_random"; exit 1)
+	@test -d data/runs/mexican_hat/k5/alpha0p70/run_00 || \
+		(echo "Missing Mexican-hat run data. Run: make train_mexican_hat"; exit 1)
+
+analyze: check_runs
 	bash scripts/05_analyze.sh
 
-figures: analyze
+figures: check_runs
 	bash scripts/06_make_figures.sh
+	bash scripts/07_make_stdp_figure.sh
 
-all: figures
+all: train analyze figures
 
 # --------------------------------------------------------------------------
 # Supplemental pipeline

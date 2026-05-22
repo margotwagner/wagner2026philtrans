@@ -33,16 +33,12 @@ mkdir -p "$FIG_ROOT/figure2/mexican_hat/k5"
 mkdir -p "$FIG_ROOT/figure3/mexican_hat/k5"
 mkdir -p "$FIG_ROOT/figure4/mexican_hat/k5"
 mkdir -p "$FIG_ROOT/figure5/mexican_hat/k5"
-mkdir -p "$FIG_ROOT/figure6/mexican_hat/k5"
-mkdir -p "$FIG_ROOT/figure7/mexican_hat/k5"
 
 mkdir -p "$FIG_ROOT/figure1/random"
 mkdir -p "$FIG_ROOT/figure2/random"
 mkdir -p "$FIG_ROOT/figure3/random"
 mkdir -p "$FIG_ROOT/figure4/random"
 mkdir -p "$FIG_ROOT/figure5/random"
-mkdir -p "$FIG_ROOT/figure6/random"
-mkdir -p "$FIG_ROOT/figure7/random"
 
 
 echo "============================================================"
