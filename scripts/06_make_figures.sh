@@ -2,19 +2,19 @@
 set -euo pipefail
 
 # ============================================================================
-# 08_make_figures.sh
+# 06_make_figures.sh
 #
 # Generate manuscript figures.
 #
 # Run from repository root:
 #
-#   bash scripts/08_make_figures.sh
+#   bash scripts/06_make_figures.sh
 #
 # Requirements
 # ------------
 # Must be run after:
 #
-#   bash scripts/07_analyze.sh
+#   bash scripts/05_analyze.sh
 #
 # Note: this script assumes the following have been run:
 #
@@ -22,7 +22,7 @@ set -euo pipefail
 #   bash scripts/02_build_hidden_weights.sh
 #   bash scripts/03_train_random.sh
 #   bash scripts/04_train_mexican_hat.sh
-#   bash scripts/07_analyze.sh
+#   bash scripts/05_analyze.sh
 #
 # ============================================================================
 
@@ -55,17 +55,17 @@ echo "============================================================"
 echo
 echo "Generating Figure 1..."
 
-if [[ ! -f "data/hidden_weight_inits/mexican_hat/k5/alpha0p75/Whh.npy" ]]; then
+if [[ ! -f "data/hidden_weight_inits/mexican_hat/k5/alpha0p70/Whh.npy" ]]; then
   echo "ERROR: Figure 1 input not found [Mexican hat]."
   exit 1
 fi
 
 
-# Mexican hat initial connectivity with α₀=0.75
+# Mexican hat initial connectivity with α₀=0.70
 python src/figures/figure1_initial_connectivity.py \
-  data/hidden_weight_inits/mexican_hat/k5/alpha0p75/Whh.npy \
-  --savepath "$FIG_ROOT/figure1/mexican_hat/k5/alpha0p75.png" \
-  --alpha-label 0.75 \
+  data/hidden_weight_inits/mexican_hat/k5/alpha0p70/Whh.npy \
+  --savepath "$FIG_ROOT/figure1/mexican_hat/k5/alpha0p70.png" \
+  --alpha-label 0.70 \
   --trace-lw 4 \
   --no-show
 
@@ -86,9 +86,9 @@ python src/figures/figure1_initial_connectivity.py \
 echo
 echo "Generating Figure 2..."
 
-# Mexican hat initial connectivity with α₀=0.75
+# Mexican hat initial connectivity with α₀=0.70
 python src/figures/figure2_polar_trajectory.py \
-  data/runs/mexican_hat/k5/alpha0p75/run_00 \
+  data/runs/mexican_hat/k5/alpha0p70/run_00 \
   --savepath "$FIG_ROOT/figure2/mexican_hat/k5/run_00_polar.png" \
   --title "Mexican hat initialization" \
   --fontsize 22 \
@@ -108,10 +108,10 @@ python src/figures/figure2_polar_trajectory.py \
 echo
 echo "Generating Figure 3..."
 
-# Mexican hat initial connectivity with α₀=0.75
+# Mexican hat initial connectivity with α₀=0.70
 python src/figures/figure3_hidden_activity.py \
-  data/runs/mexican_hat/k5/alpha0p75/run_00 \
-  --savepath "$FIG_ROOT/figure3/mexican_hat/k5/alpha0p75_run_00.png" \
+  data/runs/mexican_hat/k5/alpha0p70/run_00 \
+  --savepath "$FIG_ROOT/figure3/mexican_hat/k5/alpha0p70_run_00.png" \
   --fontsize 20
 
 # Random initialization baseline
@@ -126,10 +126,10 @@ python src/figures/figure3_hidden_activity.py \
 echo
 echo "Generating Figure 4..."
 
-# Mexican hat initial connectivity with α₀=0.75
+# Mexican hat initial connectivity with α₀=0.70
 python src/figures/figure4_learned_weights.py \
-  data/runs/mexican_hat/k5/alpha0p75 \
-  --savepath "$FIG_ROOT/figure4/mexican_hat/k5/alpha0p75.png" \
+  data/runs/mexican_hat/k5/alpha0p70 \
+  --savepath "$FIG_ROOT/figure4/mexican_hat/k5/alpha0p70.png" \
   --fontsize 14 \
   --no-show
 
@@ -146,10 +146,10 @@ python src/figures/figure4_learned_weights.py \
 echo
 echo "Generating Figure 5..."
 
-# Mexican hat initial connectivity with α₀=0.75
+# Mexican hat initial connectivity with α₀=0.70
 python src/figures/figure5_decomposed_weights.py \
-  data/runs/mexican_hat/k5/alpha0p75 \
-  --savepath "$FIG_ROOT/figure5/mexican_hat/k5/alpha0p75" \
+  data/runs/mexican_hat/k5/alpha0p70 \
+  --savepath "$FIG_ROOT/figure5/mexican_hat/k5/alpha0p70" \
   --fontsize 14 \
   --no-show
 
@@ -168,11 +168,11 @@ echo "Generating Figure 6..."
 
 python src/figures/figure6_training_dynamics.py \
   data/runs/random \
-  data/runs/mexican_hat/k5/alpha0p75 \
+  data/runs/mexican_hat/k5/alpha0p70 \
   --labels \
     "random" \
-    "mexican hat α₀=0.75" \
-  --savepath "$FIG_ROOT/figure6/random_vs_mexican_hat_alpha0p75_log.png" \
+    "mexican hat α₀=0.70" \
+  --savepath "$FIG_ROOT/figure6/random_vs_mexican_hat_alpha0p70_log.png" \
   --fontsize 16 \
   --logx \
   --logy \
@@ -182,11 +182,11 @@ python src/figures/figure6_training_dynamics.py \
 
 python src/figures/figure6_training_dynamics.py \
   data/runs/random \
-  data/runs/mexican_hat/k5/alpha0p75 \
+  data/runs/mexican_hat/k5/alpha0p70 \
   --labels \
     "random" \
-    "mexican hat α₀=0.75" \
-  --savepath "$FIG_ROOT/figure6/random_vs_mexican_hat_alpha0p75_raw.png" \
+    "mexican hat α₀=0.70" \
+  --savepath "$FIG_ROOT/figure6/random_vs_mexican_hat_alpha0p70_raw.png" \
   --fontsize 16 \
   --no-slope \
   --mh-color "#2c7fb8" \
@@ -198,12 +198,12 @@ python src/figures/figure6_training_dynamics.py \
 echo
 echo "Generating Figure 7..."
 
-# Mexican hat initial connectivity with α₀=0.75
+# Mexican hat initial connectivity with α₀=0.70
 python src/figures/figure7_alpha_training.py \
   --condition-roots \
     data/runs/random \
-    data/runs/mexican_hat/k5/alpha0p75 \
-  --savepath "$FIG_ROOT/figure7/random_vs_mexican_hat_alpha0p75.png" \
+    data/runs/mexican_hat/k5/alpha0p70 \
+  --savepath "$FIG_ROOT/figure7/random_vs_mexican_hat_alpha0p70.png" \
   --fontsize 16 \
   --median-lw 4 \
   --mh-color "#2c7fb8"
