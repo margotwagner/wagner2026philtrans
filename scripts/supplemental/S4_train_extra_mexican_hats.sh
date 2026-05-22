@@ -2,13 +2,14 @@
 set -euo pipefail
 
 # ============================================================================
-# 04_train_mexican_hat.sh
+# S4_train_extra_mexican_hat.sh
 #
-# Train the dense Elman RNN using Mexican-hat hidden-weight initializations.
+# Train the dense Elman RNN using additional Mexican-hat hidden-weight
+# initializations (alpha sweep).
 #
 # Run from the repository root:
 #
-#   bash scripts/04_train_mexican_hat.sh
+#   bash scripts/supplemental/S4_train_extra_mexican_hats.sh
 #
 # Outputs
 # -------
@@ -21,7 +22,7 @@ set -euo pipefail
 # Must be run after:
 #
 #   bash scripts/01_build_inputs.sh
-#   bash scripts/02_build_hidden_weights.sh
+#   bash scripts/supplemental/S1_build_extra_hidden_weights.sh
 # ============================================================================
 
 DATA="data/inputs/Ns100_SeqN100_asym1.pth.tar"
@@ -99,15 +100,32 @@ run_condition () {
 }
 
 echo "============================================================"
-echo "Running Mexican-hat α₀=0.70 experiment..."
+echo "Running Mexican-hat initialization experiments..."
 echo "============================================================"
 
+# Centered Mexican hat initialization: k = 0
 run_condition \
-  "k5 alpha=0p75" \
-  "$INIT_ROOT/mexican_hat/k5/alpha0p70/Whh.npy" \
-  "$RUN_ROOT/k5/alpha0p70"
+  "k0" \
+  "$INIT_ROOT/mexican_hat/k0/Whh.npy" \
+  "$RUN_ROOT/k0"
+
+# Shifted Mexican hat initializations: k = 5, alpha sweep
+ALPHAS=(
+  "0p00"
+  "0p25"
+  "0p50"
+  "0p75"
+  "1p00"
+)
+
+ for ALPHA in "${ALPHAS[@]}"; do
+  run_condition \
+    "k5 alpha=${ALPHA}" \
+    "$INIT_ROOT/mexican_hat/k5/alpha${ALPHA}/Whh.npy" \
+    "$RUN_ROOT/k5/alpha${ALPHA}"
+done
 
 echo
-echo "Finished Mexican-hat α₀=0.70 experiment."
+echo "Finished all Mexican-hat initialization experiments."
 echo "Outputs saved to:"
-echo "  $RUN_ROOT/k5/alpha0p70"
+echo "  $RUN_ROOT"

@@ -2,14 +2,14 @@
 set -euo pipefail
 
 # ============================================================================
-# S2_train_cyclic_shift.sh
+# S3_train_cyclic_shift.sh
 #
 # Train the dense Elman RNN using cyclic-shift hidden-weight initializations
 # across alpha values.
 #
 # Run from the repository root:
 #
-#   bash scripts/supplemental/S2_train_cyclic_shift.sh
+#   bash scripts/supplemental/S3_train_cyclic_shift.sh
 #
 # Outputs
 # -------
@@ -22,7 +22,7 @@ set -euo pipefail
 # Must be run after:
 #
 #   bash scripts/01_build_inputs.sh
-#   bash scripts/02_build_hidden_weights.sh
+#   bash scripts/supplemental/S1_build_extra_hidden_weights.sh
 # ============================================================================
 
 DATA="data/inputs/Ns100_SeqN100_asym1.pth.tar"
@@ -84,7 +84,7 @@ for ALPHA in "${ALPHAS[@]}"; do
     echo "  $WHH_PATH"
     echo
     echo "Run:"
-    echo "  bash scripts/02_build_hidden_weights.sh"
+    echo "  bash scripts/supplemental/S2_build_hidden_weights.sh"
     exit 1
   fi
 

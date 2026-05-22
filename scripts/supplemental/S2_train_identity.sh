@@ -2,13 +2,13 @@
 set -euo pipefail
 
 # ============================================================================
-# 06_train_identity.sh
+# S2_train_identity.sh
 #
 # Train the dense Elman RNN using the identity hidden-weight initialization.
 #
 # Run from the repository root:
 #
-#   bash scripts/06_train_identity.sh
+#   bash scripts/supplemental/S2_train_identity.sh
 #
 # Outputs
 # -------
@@ -21,7 +21,7 @@ set -euo pipefail
 # Must be run after:
 #
 #   bash scripts/01_build_inputs.sh
-#   bash scripts/02_build_hidden_weights.sh
+#   bash scripts/supplemental/S1_build_extra_hidden_weights.sh
 # ============================================================================
 
 # --------------------------------------------------------------------------
@@ -52,7 +52,7 @@ if [[ ! -f "$INIT_ROOT/identity/Whh.npy" ]]; then
   echo "ERROR: Identity initialization not found."
   echo
   echo "Run:"
-  echo "  bash scripts/02_build_hidden_weights.sh"
+  echo "  bash scripts/supplemental/S2_build_extra_hidden_weights.sh"
   exit 1
 fi
 
