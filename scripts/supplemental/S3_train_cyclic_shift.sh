@@ -84,7 +84,7 @@ for ALPHA in "${ALPHAS[@]}"; do
     echo "  $WHH_PATH"
     echo
     echo "Run:"
-    echo "  bash scripts/supplemental/S2_build_hidden_weights.sh"
+    echo "  bash scripts/supplemental/S1_build_extra_hidden_weights.sh"
     exit 1
   fi
 
