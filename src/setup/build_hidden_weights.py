@@ -468,6 +468,7 @@ def build_mexican_hat_family(
     output_dir: Path,
     hidden_n: int,
     mix_ratios: Sequence[float],
+    mexican_hat_offsets: Sequence[str],
     overwrite: bool = False,
 ) -> None:
     """
@@ -484,9 +485,13 @@ def build_mexican_hat_family(
         ("dog", dict(sigma_e=20.0, sigma_i=30.0, a=1.0)),
     ]
 
+    offset_map = {
+    "k0": 0,
+    "k5": -5,
+}
+
     offset_configs = [
-        ("k0", 0),
-        ("k5", -5),
+        (tag, offset_map[tag]) for tag in mexican_hat_offsets
     ]
 
     rho_targets_k5 = {
@@ -669,6 +674,13 @@ def parse_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
         action="store_true",
         help="Overwrite existing .npy and .json outputs.",
     )
+    parser.add_argument(
+        "--mexican-hat-offsets",
+        nargs="+",
+        default=["k0", "k5"],
+        choices=["k0", "k5"],
+        help="Which Mexican-hat offsets to build.",
+    )
     return parser.parse_args(argv)
 
 
@@ -713,6 +725,7 @@ def main(argv: Optional[Sequence[str]] = None) -> None:
             output_dir=args.output_dir,
             hidden_n=args.hidden_n,
             mix_ratios=args.mix_ratios,
+            mexican_hat_offsets=args.mexican_hat_offsets,
             overwrite=args.overwrite,
         )
 

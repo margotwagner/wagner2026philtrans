@@ -12,5 +12,6 @@ set -euo pipefail
 python src/setup/build_hidden_weights.py \
   --output-dir data/hidden_weight_inits \
   --families random mexican_hat \
+  --mexican-hat-offsets k5 \
   --mix-ratios 0.70 \
   --overwrite
