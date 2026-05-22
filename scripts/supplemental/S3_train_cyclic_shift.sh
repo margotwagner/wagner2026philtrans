@@ -2,14 +2,14 @@
 set -euo pipefail
 
 # ============================================================================
-# 05_train_cyclic_shift.sh
+# S2_train_cyclic_shift.sh
 #
 # Train the dense Elman RNN using cyclic-shift hidden-weight initializations
 # across alpha values.
 #
 # Run from the repository root:
 #
-#   bash scripts/05_train_cyclic_shift.sh
+#   bash scripts/supplemental/S2_train_cyclic_shift.sh
 #
 # Outputs
 # -------
