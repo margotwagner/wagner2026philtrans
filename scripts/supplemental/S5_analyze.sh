@@ -31,7 +31,6 @@ set -euo pipefail
 #   bash scripts/supplemental/S3_train_cyclic_shift.sh
 #   bash scripts/supplemental/S4_train_extra_mexican_hats.sh
 # ============================================================
-===================================================
 
 RUNS_ROOT="data/runs"
 MODE="all"

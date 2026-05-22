@@ -118,7 +118,7 @@ ALPHAS=(
   "1p00"
 )
 
- for ALPHA in "${ALPHAS[@]}"; do
+for ALPHA in "${ALPHAS[@]}"; do
   run_condition \
     "k5 alpha=${ALPHA}" \
     "$INIT_ROOT/mexican_hat/k5/alpha${ALPHA}/Whh.npy" \
