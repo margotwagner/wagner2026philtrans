@@ -37,7 +37,7 @@ import matplotlib.pyplot as plt
 
 
 def read_angles_csv(path):
-    """Robust CSV loader matching make_figures.py Fig. 4 behavior."""
+    """Robust CSV loader."""
     if not os.path.exists(path):
         return None
 

@@ -2,19 +2,11 @@
 """
 Plot recurrent connectivity summaries averaged across trained RNN runs.
 
-This script loads checkpoints from run_* directories under a single condition/config
-folder, extracts the final recurrent weight matrix for each run, optionally sorts
-neurons by their peak hidden-state activation time on the stored training sequence,
-and plots three summary panels:
+This script loads checkpoints from run_* directories under a single condition/config folder, extracts the final recurrent weight matrix for each run, optionally sorts neurons by their peak hidden-state activation time on the stored training sequence, and plots three summary panels:
 
 1. Mean recurrent connectivity matrix
 2. Mean ± SD diagonal trace across runs
 3. Eigenspectrum of each run and of the run-averaged matrix
-
-The core analysis and plotting logic is intentionally kept the same as the original
-interactive code. The main changes are that this file can be run from the command
-line, the hard-coded example call has been replaced with argparse options, and the
-function name is more general/descriptive.
 
 Example
 -------

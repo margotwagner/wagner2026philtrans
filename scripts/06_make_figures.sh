@@ -95,6 +95,8 @@ python src/figures/figure2_polar_trajectory.py \
   --fontsize 22 \
   --linewidth 4
 
+echo "Saved figure to: $FIG_ROOT/figure2/mexican_hat/k5/run_00_polar.png"
+
 # Random initialization baseline
 python src/figures/figure2_polar_trajectory.py \
   data/runs/random/run_00 \
@@ -102,6 +104,8 @@ python src/figures/figure2_polar_trajectory.py \
   --title "Random initialization" \
   --fontsize 22 \
   --linewidth 4
+
+echo "Saved figure to: $FIG_ROOT/figure2/random/run_00_polar.png"
 
 # --------------------------------------------------------------------------
 # Figure 3: replay and prediction hidden activity
@@ -115,11 +119,15 @@ python src/figures/figure3_hidden_activity.py \
   --savepath "$FIG_ROOT/figure3/mexican_hat/k5/alpha0p70_run_00.png" \
   --fontsize 20
 
+echo "Saved figure to: $FIG_ROOT/figure3/mexican_hat/k5/alpha0p70_run_00.png"
+
 # Random initialization baseline
 python src/figures/figure3_hidden_activity.py \
   data/runs/random/run_00 \
   --savepath "$FIG_ROOT/figure3/random/run_00.png" \
   --fontsize 20
+
+echo "Saved figure to: $FIG_ROOT/figure3/random/run_00.png"
 
 # --------------------------------------------------------------------------
 # Figure 4: learned recurrent weights
@@ -152,14 +160,12 @@ python src/figures/figure5_decomposed_weights.py \
   data/runs/mexican_hat/k5/alpha0p70 \
   --savepath "$FIG_ROOT/figure5/mexican_hat/k5/alpha0p70" \
   --fontsize 14 \
-  --no-show
 
 # Random initialization baseline
 python src/figures/figure5_decomposed_weights.py \
   data/runs/random \
   --savepath "$FIG_ROOT/figure5/random/random" \
   --fontsize 14 \
-  --no-show
 
 # --------------------------------------------------------------------------
 # Figure 6: training dynamics

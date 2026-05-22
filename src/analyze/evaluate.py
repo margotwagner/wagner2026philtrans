@@ -279,7 +279,7 @@ def _write_train_summary(ckpt_path: Path):
         # first index where loss <= thresh
         within = np.where(loss_arr <= thresh)[0]
         conv_epoch_110 = int(within[0]) if within.size > 0 else None
-        loss_auc = float(np.trapz(loss_arr, dx=1.0))
+        loss_auc = float(np.trapezoid(loss_arr, dx=1.0))
     else:
         best_epoch = None
         best_loss = None

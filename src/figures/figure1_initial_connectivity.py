@@ -13,9 +13,6 @@ its symmetric and antisymmetric components:
     W_sym  = 0.5 * (W + W.T)
     W_asym = 0.5 * (W - W.T)
 
-This mirrors the inspection workflow used in ``hidden-weight-builder.ipynb``,
-but keeps the plotting in ``src/figures`` rather than in the setup/build stage.
-
 Example:
     python ./src/figures/figure1_initial_connectivity.py \
         ./data/hidden_weight_inits/mexicanhat/k5/alphasym0p75/Whh.npy \

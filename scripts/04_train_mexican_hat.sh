@@ -109,8 +109,6 @@ run_condition \
 
 echo
 echo "Finished Mexican-hat α₀=0.70 experiment."
-echo "Logs saved to:"
-echo "  $RUN_ROOT/k5/alpha0p70/train_*.log"
 echo "Outputs saved to:"
 echo "  $RUN_ROOT/k5/alpha0p70"
 echo

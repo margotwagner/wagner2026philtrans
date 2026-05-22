@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Create decomposed Fig. 4 recurrent-weight summary plots.
+Create decomposed Fig. 5 recurrent-weight summary plots.
 
 This script loads all run_* checkpoint directories under a condition/configuration folder, extracts the final recurrent weight matrix for each run, optionally sorts neurons by peak hidden-state time on the saved training sequence, averages weights across runs, decomposes the mean matrix into symmetric and antisymmetric parts, and plots each component as a separate three-panel figure:
 
@@ -383,7 +383,7 @@ def plot_last_decomposed(
     frac_a = norm_a / norm_tot if norm_tot > 0 else np.nan
     ratio_as = norm_a / norm_s if norm_s > 0 else np.inf
 
-    print("\n[Fig4] Recurrent weight decomposition (mean over runs)")
+    print("\n[Fig5] Recurrent weight decomposition (mean over runs)")
     print("-----------------------------------------------------")
     print(f"  ||W_sym||_F   = {norm_s:.6f}")
     print(f"  ||W_anti||_F  = {norm_a:.6f}")
@@ -395,7 +395,7 @@ def plot_last_decomposed(
         w_sym,
         weights_sym,
         suptitle="Symmetric recurrent component (final)",
-        tag_for_print="Fig4-SYM",
+        tag_for_print="Fig5-SYM",
         eig_xlim_=eig_xlim,
     )
 
@@ -403,7 +403,7 @@ def plot_last_decomposed(
         w_anti,
         weights_anti,
         suptitle="Antisymmetric recurrent component (final)",
-        tag_for_print="Fig4-ANTI",
+        tag_for_print="Fig5-ANTI",
         eig_xlim_=eig_xlim,
     )
 

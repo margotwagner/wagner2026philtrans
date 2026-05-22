@@ -97,3 +97,4 @@ done
 
 echo
 echo "Finished full analysis pipeline."
+echo
