@@ -1,3 +1,30 @@
+"""
+Interactive STDP exploration tool for the Phil. Trans. paper.
+
+This marimo application was used to explore how different spike-timing-
+dependent plasticity (STDP) kernels shape recurrent connectivity,
+eigenspectra, and traveling-wave dynamics in ring networks.
+
+The application allows interactive manipulation of:
+    - STDP symmetry (epsilon)
+    - LTP/LTD amplitudes and time constants
+    - input bump parameters
+
+and visualizes:
+    - the resulting STDP kernel
+    - emergent spatial weight profiles
+    - eigenspectra of the recurrent connectivity matrix
+    - simulated network dynamics
+    - Fourier-mode evolution of activity patterns
+
+This notebook is intended for interactive exploration and supplemental
+analysis. Reproducible manuscript figures are generated separately by the
+scripts in ``src/figures/``.
+
+Run with:
+    marimo run notebooks/STDP_interactive.py
+"""
+
 import marimo
 
 __generated_with = "0.19.2"
