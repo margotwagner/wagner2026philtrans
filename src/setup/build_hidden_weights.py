@@ -716,7 +716,7 @@ def main(argv: Optional[Sequence[str]] = None) -> None:
             overwrite=args.overwrite,
         )
 
-    print("\nDone building hidden-weight initializations.")
+    print("\nDone building hidden-weight initializations.\n")
 
 
 if __name__ == "__main__":

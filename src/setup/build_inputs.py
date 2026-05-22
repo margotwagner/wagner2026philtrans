@@ -271,6 +271,8 @@ def main(argv: Optional[list[str]] = None) -> None:
     if args.savepath is not None:
         save_inputs(args.savepath, X_mini, Target_mini)
         print(f"Saved tensors to: {args.savepath}")
+    print("Finished building inputs.")
+    print()
 
 
 if __name__ == "__main__":
