@@ -2,13 +2,13 @@
 set -euo pipefail
 
 # ============================================================================
-# 07_analyze.sh
+# 05_analyze.sh
 #
 # Run evaluation, offline metrics, and aggregation for all trained conditions.
 #
 # Run from the repository root:
 #
-#   bash scripts/07_analyze.sh
+#   bash scripts/05_analyze.sh
 #
 # Outputs
 # -------
@@ -27,8 +27,6 @@ set -euo pipefail
 #
 #   bash scripts/03_train_random.sh
 #   bash scripts/04_train_mexican_hat.sh
-#   bash scripts/05_train_cycshift.sh
-#   bash scripts/06_train_identity.sh
 # ============================================================================
 
 RUNS_ROOT="data/runs"
@@ -40,20 +38,8 @@ MAIN_AGG="src/analyze/aggregate_metrics.py"
 
 CONDITION_ROOTS=(
   "$RUNS_ROOT/random"
-  "$RUNS_ROOT/identity"
 
-  "$RUNS_ROOT/cycshift/alpha0p00"
-  "$RUNS_ROOT/cycshift/alpha0p25"
-  "$RUNS_ROOT/cycshift/alpha0p50"
-  "$RUNS_ROOT/cycshift/alpha0p75"
-  "$RUNS_ROOT/cycshift/alpha1p00"
-
-  "$RUNS_ROOT/mexicanhat/k0"
-  "$RUNS_ROOT/mexicanhat/k5/alpha0p00"
-  "$RUNS_ROOT/mexicanhat/k5/alpha0p25"
-  "$RUNS_ROOT/mexicanhat/k5/alpha0p50"
-  "$RUNS_ROOT/mexicanhat/k5/alpha0p75"
-  "$RUNS_ROOT/mexicanhat/k5/alpha1p00"
+  "$RUNS_ROOT/mexican_hat/k5/alpha0p70"
 )
 
 echo "============================================================"
