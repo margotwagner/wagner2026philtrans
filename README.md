@@ -6,6 +6,11 @@ Gaussian-bump sequence, initializes recurrent hidden weights, trains dense RNNs
 under random and Mexican-hat initializations, computes offline metrics, and
 generates manuscript figures.
 
+This is the repository associated with the following paper: 
+Balancing Stability and Flow in Hippocampal Networks via Inductive Bias and Learned Symmetry Breaking
+Margot Wagner, Yusi Chen, Arjun Karuvally, Mia Cameron, Terrence J. Sejnowski
+bioRxiv 2026.02.06.704443; doi: https://doi.org/10.64898/2026.02.06.704443
+
 ## Repository Layout
 
 ```text
