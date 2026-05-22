@@ -77,6 +77,7 @@ fi
 # Random initialization baseline
 python src/figures/figure1_initial_connectivity.py \
   data/hidden_weight_inits/random/seed000/Whh.npy \
+  --savepath "$FIG_ROOT/figure1/random/random.png" \
   --trace-lw 4 \
   --no-show
 
